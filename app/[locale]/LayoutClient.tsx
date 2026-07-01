@@ -3,23 +3,15 @@
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/toaster";
-import { getTitle } from "@/lib/titleMap";
-import { usePathname } from "next/navigation";
+import { getPageTitle } from "@/lib/titleMap";
+import { usePathname } from "@/i18n/routing";
+import { useLocale } from "next-intl";
 import { useEffect } from "react";
 import { SWRConfig } from "swr";
 import { fetchWithLocale } from "@/lib/fetchWithLocale";
 
 function isPublicPath(pathname: string): boolean {
-    return (
-        pathname === "/vi" ||
-        pathname === "/en" ||
-        pathname === "/" ||
-        pathname.includes("/login") ||
-        pathname.includes("/dang-nhap") ||
-        pathname.includes("/auth") ||
-        pathname.includes("/terms-and-privacy") ||
-        pathname.includes("/dieu-khoan-bao-mat")
-    );
+    return pathname === "/" || pathname === "/auth" || pathname === "/terms-and-privacy";
 }
 
 export default function LayoutClient({
@@ -28,16 +20,11 @@ export default function LayoutClient({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const locale = pathname.startsWith("/en") ? "en" : "vi";
-    const cleanPath =
-        locale === "en"
-            ? pathname.replace(/^\/en/, "") || "/"
-            : pathname.replace(/^\/vi/, "") || "/";
+    const locale = useLocale() as "en" | "vi";
 
     useEffect(() => {
-        const title = getTitle(cleanPath, locale as "en" | "vi");
-        document.title = title ?? "Elise Demo";
-    }, [pathname, locale, cleanPath]);
+        document.title = getPageTitle(pathname, locale);
+    }, [pathname, locale]);
 
     const hideHeader = isPublicPath(pathname);
 

@@ -1,12 +1,17 @@
 import { ReactNode } from 'react';
 import './globals.css';
 import type { Metadata } from 'next';
+import { APP_NAME } from '@/lib/titleMap';
 
 export const metadata: Metadata = {
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
   icons: {
-    icon: '/images/BMG_LOGO_sitemap.png',
-    shortcut: '/images/BMG_LOGO_sitemap.png',
-    apple: '/images/BMG_LOGO_sitemap.png',
+    icon: '/Icon-Elise.png',
+    shortcut: '/Icon-Elise.png',
+    apple: '/Icon-Elise.png',
   },
 };
 

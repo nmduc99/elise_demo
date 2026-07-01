@@ -16,6 +16,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { getRoleFromUser } from "@/lib/demo/roles";
 import { POS_NAV, navForRole } from "@/lib/demo/nav";
 import { hasNavAccess } from "@/lib/demo/permissions";
+import BrandLogo from "@/components/BrandLogo";
 
 export default function MobileNav() {
     const t = useTranslations("elise");
@@ -50,7 +51,7 @@ export default function MobileNav() {
                     </DialogHeader>
 
                     <div className="flex justify-between items-center px-4 py-3 border-b">
-                        <h2 className="text-lg font-semibold text-foreground">{t("brand")}</h2>
+                        <BrandLogo size="sm" />
                         <button
                             onClick={() => setOpen(false)}
                             aria-label="Close menu"
