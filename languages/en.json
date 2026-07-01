@@ -12,6 +12,9 @@
             "franchise": "Franchise",
             "hr": "Human resources",
             "reports": "Reports",
+            "transactions": "Transactions",
+            "ledger": "Cash book",
+            "permissions": "Permissions",
             "analytics": "Profit analytics",
             "pos": "Sell"
         }

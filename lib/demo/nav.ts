@@ -20,7 +20,10 @@ export const DEMO_NAV: DemoNavItem[] = [
     { href: "/warehouse", labelKey: "warehouse", permission: "warehouse" },
     { href: "/staff", labelKey: "hr", permission: "hr" },
     { href: "/franchise", labelKey: "franchise", permission: "franchise" },
+    { href: "/transactions", labelKey: "transactions", permission: "transactions" },
+    { href: "/ledger", labelKey: "ledger", permission: "ledger" },
     { href: "/report-center", labelKey: "reports", permission: "reports" },
+    { href: "/permissions", labelKey: "permissions", permission: "permissions" },
 ];
 
 export const POS_NAV: DemoNavItem = { href: "/pos", labelKey: "pos", permission: "pos" };
@@ -32,7 +35,6 @@ export function navForRole(role: DemoRole | null): DemoNavItem[] {
 /** Trang landing ưu tiên theo role (logical path cho next-intl router). */
 const ROLE_HOME: Partial<Record<DemoRole, string>> = {
     procurement: "/procurement",
-    franchise_monitor: "/franchise",
 };
 
 /**

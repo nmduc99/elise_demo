@@ -13,11 +13,14 @@ import {
     MONTHS,
     PERFORMANCE,
     PRODUCTS,
+    PURCHASE_ORDERS,
     STORES,
     STORE_WAREHOUSES,
+    SUPPLIERS,
     filterPerformance,
     getRegion,
     getStore,
+    getWarehouse,
     stockForWarehouse,
     sumPerformance,
     totalUnitsInWarehouse,
@@ -63,17 +66,15 @@ export default function ReportCenterPage() {
     const revenueAccess = useDemoAccess("report_revenue");
     const profitAccess = useDemoAccess("report_profit");
     const inventoryAccess = useDemoAccess("report_inventory");
-    const isFranchiseOnly = scope.role === "franchise_monitor";
 
     const storeUniverse = useMemo(
         () =>
             STORES.filter(
                 (s) =>
-                    (!isFranchiseOnly || s.type === "franchise") &&
                     (!scope.regionId || s.regionId === scope.regionId) &&
                     (!scope.storeId || s.id === scope.storeId)
             ),
-        [isFranchiseOnly, scope.regionId, scope.storeId]
+        [scope.regionId, scope.storeId]
     );
     const storeIds = useMemo(() => new Set(storeUniverse.map((s) => s.id)), [storeUniverse]);
 
@@ -150,6 +151,37 @@ export default function ReportCenterPage() {
             .sort((a, b) => b.revenue - a.revenue);
     }, [storeIds]);
 
+    const endOfDayRows = useMemo(() => {
+        const today = new Date().toISOString().slice(0, 10);
+        return storeUniverse.map((store) => {
+            const dayPerf = PERFORMANCE.filter((p) => p.storeId === store.id && p.month === currentMonth);
+            const totals = sumPerformance(dayPerf);
+            const dailyRevenue = Math.round(totals.revenue / 30);
+            const dailyOrders = Math.round(totals.orders / 30);
+            return { store, dailyRevenue, dailyOrders, cash: Math.round(dailyRevenue * 0.55), card: Math.round(dailyRevenue * 0.45) };
+        });
+    }, [storeUniverse]);
+
+    const cashflowRows = useMemo(() => {
+        return MONTHS.slice(-6).map((month) => {
+            const t = sumPerformance(scopedRows.filter((r) => r.month === month));
+            return {
+                label: monthLabel(month),
+                inflow: t.revenue,
+                outflow: t.cogs + t.opex,
+                net: t.profit,
+            };
+        });
+    }, [scopedRows]);
+
+    const purchaseRows = useMemo(() => {
+        return PURCHASE_ORDERS.map((po) => ({
+            po,
+            supplier: SUPPLIERS.find((s) => s.id === po.supplierId)?.name ?? "—",
+            warehouse: getWarehouse(po.warehouseId)?.name ?? "—",
+        }));
+    }, []);
+
     return (
         <RoleGuard permission={["report_revenue", "report_profit", "report_inventory", "invoices"]}>
             <div className="w-full space-y-6 p-4 md:p-6">
@@ -157,8 +189,7 @@ export default function ReportCenterPage() {
                     <div>
                         <h1 className="text-2xl font-bold text-slate-900">Báo cáo kinh doanh</h1>
                         <p className="text-sm text-slate-500">
-                            Doanh thu · Lợi nhuận · Tồn kho · Bán hàng · Nhân viên bán hàng
-                            {isFranchiseOnly ? " (chỉ cửa hàng nhượng quyền)" : ""}
+                            Doanh thu · Lợi nhuận · Tồn kho · Cuối ngày · Dòng tiền · Nhập hàng
                         </p>
                     </div>
                     <ScopeFilter scope={scope} />
@@ -190,6 +221,9 @@ export default function ReportCenterPage() {
                         {inventoryAccess.canAccess && <TabsTrigger value="inventory">Tồn kho</TabsTrigger>}
                         {revenueAccess.canAccess && <TabsTrigger value="sales">Bán hàng</TabsTrigger>}
                         {revenueAccess.canAccess && <TabsTrigger value="employee">NV bán hàng</TabsTrigger>}
+                        {revenueAccess.canAccess && <TabsTrigger value="eod">Cuối ngày</TabsTrigger>}
+                        {profitAccess.canAccess && <TabsTrigger value="cashflow">Dòng tiền</TabsTrigger>}
+                        {inventoryAccess.canAccess && <TabsTrigger value="purchase">Nhập hàng</TabsTrigger>}
                     </TabsList>
 
                     {/* Revenue */}
@@ -324,6 +358,85 @@ export default function ReportCenterPage() {
                                 formatVndShort(r.revenue),
                             ])}
                             alignRight={[2, 3]}
+                        />
+                    </TabsContent>
+
+                    {/* End of day */}
+                    <TabsContent value="eod" className="space-y-4">
+                        <ReportTable
+                            title="Báo cáo cuối ngày (ước tính theo tháng)"
+                            onExport={() =>
+                                exportCsv("bao-cao-cuoi-ngay.csv", [
+                                    ["Cửa hàng", "Doanh thu ngày", "Đơn hàng", "Tiền mặt", "Thẻ/CK"],
+                                    ...endOfDayRows.map((r) => [r.store.name, r.dailyRevenue, r.dailyOrders, r.cash, r.card]),
+                                ])
+                            }
+                            head={["Cửa hàng", "DT ngày", "Đơn", "Tiền mặt", "Thẻ/CK"]}
+                            rows={endOfDayRows.map((r) => [
+                                r.store.name,
+                                formatVndShort(r.dailyRevenue),
+                                formatNumber(r.dailyOrders),
+                                formatVndShort(r.cash),
+                                formatVndShort(r.card),
+                            ])}
+                            alignRight={[1, 2, 3, 4]}
+                        />
+                    </TabsContent>
+
+                    {/* Cashflow */}
+                    <TabsContent value="cashflow" className="space-y-4">
+                        <div className="rounded-xl border bg-white p-5 shadow-sm">
+                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Dòng tiền 6 tháng (triệu đ)</h2>
+                            <BarChart
+                                data={{
+                                    labels: cashflowRows.map((r) => r.label),
+                                    datasets: [
+                                        { label: "Thu vào", data: cashflowRows.map((r) => Math.round(r.inflow / 1_000_000)), backgroundColor: ELISE_COLORS.green, borderRadius: 4 },
+                                        { label: "Chi ra", data: cashflowRows.map((r) => Math.round(r.outflow / 1_000_000)), backgroundColor: ELISE_COLORS.rose, borderRadius: 4 },
+                                    ],
+                                }}
+                                height={300}
+                            />
+                        </div>
+                        <ReportTable
+                            title="Báo cáo dòng tiền"
+                            onExport={() =>
+                                exportCsv("bao-cao-dong-tien.csv", [
+                                    ["Tháng", "Thu vào", "Chi ra", "Ròng"],
+                                    ...cashflowRows.map((r) => [r.label, r.inflow, r.outflow, r.net]),
+                                ])
+                            }
+                            head={["Tháng", "Thu vào", "Chi ra", "Dòng ròng"]}
+                            rows={cashflowRows.map((r) => [
+                                r.label,
+                                formatVndShort(r.inflow),
+                                formatVndShort(r.outflow),
+                                formatVndShort(r.net),
+                            ])}
+                            alignRight={[1, 2, 3]}
+                        />
+                    </TabsContent>
+
+                    {/* Purchase report */}
+                    <TabsContent value="purchase" className="space-y-4">
+                        <ReportTable
+                            title="Báo cáo nhập hàng theo NCC"
+                            onExport={() =>
+                                exportCsv("bao-cao-nhap-hang.csv", [
+                                    ["Mã đơn", "NCC", "Kho nhận", "SL", "Giá trị", "Trạng thái"],
+                                    ...purchaseRows.map((r) => [r.po.code, r.supplier, r.warehouse, r.po.units, r.po.totalAmount, r.po.status]),
+                                ])
+                            }
+                            head={["Mã đơn", "Nhà cung cấp", "Kho nhận", "SL", "Giá trị", "TT"]}
+                            rows={purchaseRows.map((r) => [
+                                r.po.code,
+                                r.supplier,
+                                r.warehouse,
+                                formatNumber(r.po.units),
+                                formatVndShort(r.po.totalAmount),
+                                r.po.status,
+                            ])}
+                            alignRight={[3, 4]}
                         />
                     </TabsContent>
                 </Tabs>

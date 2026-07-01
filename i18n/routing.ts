@@ -39,6 +39,10 @@ export const routing = defineRouting({
             en: "/staff",
             vi: "/nhan-vien",
         },
+        "/staff/[id]": {
+            en: "/staff/[id]",
+            vi: "/nhan-vien/[id]",
+        },
         "/franchise": {
             en: "/franchise",
             vi: "/nhuong-quyen",
@@ -50,6 +54,18 @@ export const routing = defineRouting({
         "/pos": {
             en: "/pos",
             vi: "/ban-hang-pos",
+        },
+        "/transactions": {
+            en: "/transactions",
+            vi: "/giao-dich",
+        },
+        "/ledger": {
+            en: "/ledger",
+            vi: "/so-quy",
+        },
+        "/permissions": {
+            en: "/permissions",
+            vi: "/phan-quyen",
         },
         "/terms-and-privacy": {
             en: "/terms-and-privacy",

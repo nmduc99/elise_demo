@@ -66,6 +66,12 @@ export default function CatalogPage() {
             salePrice: 0,
             sizes: "S, M, L, XL",
             colors: "Đen, Trắng",
+            unit: "Cái",
+            barcode: "",
+            description: "",
+            vatPercent: 10,
+            status: "active",
+            weightGram: 0,
         });
         setProductOpen(true);
     };
@@ -81,6 +87,12 @@ export default function CatalogPage() {
             salePrice: p.salePrice,
             sizes: p.sizes.join(", "),
             colors: p.colors.join(", "),
+            unit: p.unit ?? "Cái",
+            barcode: p.barcode ?? "",
+            description: p.description ?? "",
+            vatPercent: p.vatPercent ?? 10,
+            status: p.status ?? "active",
+            weightGram: p.weightGram ?? 0,
         });
         setProductOpen(true);
     };
@@ -100,6 +112,12 @@ export default function CatalogPage() {
             salePrice: Number(draft.salePrice) || 0,
             sizes: draft.sizes.split(",").map((s) => s.trim()).filter(Boolean),
             colors: draft.colors.split(",").map((s) => s.trim()).filter(Boolean),
+            unit: draft.unit || "Cái",
+            barcode: draft.barcode.trim(),
+            description: draft.description.trim(),
+            vatPercent: Number(draft.vatPercent) || 0,
+            status: draft.status,
+            weightGram: Number(draft.weightGram) || 0,
         };
         if (draft.id) {
             products.update(draft.id, parsed);

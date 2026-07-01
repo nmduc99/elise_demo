@@ -16,7 +16,6 @@ import { useRouter } from "@/i18n/routing";
 import {
     Briefcase,
     Calculator,
-    Crown,
     Loader2,
     LogIn,
     ShoppingBag,
@@ -30,7 +29,6 @@ const DEMO_ROLE_ICONS: Record<DemoRole, typeof Briefcase> = {
     accountant: Calculator,
     procurement: ShoppingBag,
     store_manager: Store,
-    franchise_monitor: Crown,
 };
 
 export default function DemoRolePicker() {

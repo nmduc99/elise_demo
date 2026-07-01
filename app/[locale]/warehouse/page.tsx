@@ -30,6 +30,7 @@ import {
     REGIONAL_WAREHOUSES,
     STOCK,
     STORES,
+    SUPPLIERS,
     getProduct,
     getStore,
     getWarehouse,
@@ -41,7 +42,7 @@ import { formatNumber, formatVndShort } from "@/lib/demo/format";
 import Pagination from "@/components/demo/Pagination";
 import { usePagination, type PaginationState } from "@/lib/demo/usePagination";
 import { useLocalCollection } from "@/lib/demo/useLocalCollection";
-import { ArrowRightLeft, PackageSearch, Warehouse as WarehouseIcon } from "lucide-react";
+import { ArrowRightLeft, PackageMinus, PackageSearch, RotateCcw, Warehouse as WarehouseIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 interface Transfer {
@@ -55,6 +56,19 @@ interface Transfer {
     qty: number;
 }
 
+interface StockMovement {
+    id: string;
+    createdAt: string;
+    type: "out" | "return_supplier";
+    warehouseId: string;
+    supplierId?: string;
+    productId: string;
+    size: string;
+    color: string;
+    qty: number;
+    reason: string;
+}
+
 function stockKey(wh: string, p: string, size: string, color: string): string {
     return `${wh}|${p}|${size}|${color}`;
 }
@@ -66,9 +80,11 @@ export default function WarehousePage() {
     const regionalAccess = useDemoAccess("warehouse_regional");
     const storeAccess = useDemoAccess("warehouse_store");
     const transferAccess = useDemoAccess("stock_transfer");
+    const stockOutAccess = useDemoAccess("stock_out");
     const { toast } = useToast();
 
     const [transfers, addTransfer] = useLocalCollection<Transfer>("elise-demo-transfers");
+    const [movements, addMovement] = useLocalCollection<StockMovement>("elise-demo-stock-movements");
 
     // Net adjustment per exact stock key from transfers.
     const adjustments = useMemo(() => {
@@ -79,8 +95,12 @@ export default function WarehousePage() {
             map.set(src, (map.get(src) ?? 0) - t.qty);
             map.set(dst, (map.get(dst) ?? 0) + t.qty);
         }
+        for (const m of movements) {
+            const key = stockKey(m.warehouseId, m.productId, m.size, m.color);
+            map.set(key, (map.get(key) ?? 0) - m.qty);
+        }
         return map;
-    }, [transfers]);
+    }, [transfers, movements]);
 
     const effectiveQty = (wh: string, p: string, size: string, color: string): number => {
         const base = STOCK.find((s) => s.warehouseId === wh && s.productId === p && s.size === size && s.color === color)?.qty ?? 0;
@@ -167,6 +187,184 @@ export default function WarehousePage() {
 
     const transferLabel = transferAccess.isProposeOnly ? "Đề nghị điều chuyển" : "Điều chuyển kho";
     const canTransfer = transferAccess.canWrite || transferAccess.isProposeOnly;
+
+    const [outOpen, setOutOpen] = useState(false);
+    const [returnOpen, setReturnOpen] = useState(false);
+    const [moveForm, setMoveForm] = useState({
+        regionId: REGIONAL_WAREHOUSES[0].regionId,
+        supplierId: SUPPLIERS[0].id,
+        productId: PRODUCTS[0].id,
+        size: PRODUCTS[0].sizes[0],
+        color: PRODUCTS[0].colors[0],
+        qty: 5,
+        reason: "",
+    });
+
+    const moveProduct = getProduct(moveForm.productId)!;
+    const moveWhId = regionalWarehouseForRegion(moveForm.regionId)?.id ?? REGIONAL_WAREHOUSES[0].id;
+    const moveAvailable = effectiveQty(moveWhId, moveForm.productId, moveForm.size, moveForm.color);
+
+    const submitStockOut = () => {
+        if (moveForm.qty <= 0 || moveForm.qty > moveAvailable) {
+            toast({ title: "Số lượng không hợp lệ", variant: "destructive" });
+            return;
+        }
+        addMovement({
+            id: `mv-out-${Date.now()}`,
+            createdAt: new Date().toISOString(),
+            type: "out",
+            warehouseId: moveWhId,
+            productId: moveForm.productId,
+            size: moveForm.size,
+            color: moveForm.color,
+            qty: moveForm.qty,
+            reason: moveForm.reason || "Xuất kho",
+        });
+        toast({ title: "Đã xuất kho", description: `${moveForm.qty} x ${moveProduct.name}`, variant: "success" });
+        setOutOpen(false);
+    };
+
+    const submitReturnSupplier = () => {
+        if (moveForm.qty <= 0 || moveForm.qty > moveAvailable) {
+            toast({ title: "Số lượng không hợp lệ", variant: "destructive" });
+            return;
+        }
+        if (!moveForm.supplierId) {
+            toast({ title: "Vui lòng chọn nhà cung cấp", variant: "destructive" });
+            return;
+        }
+        const supplier = SUPPLIERS.find((s) => s.id === moveForm.supplierId);
+        addMovement({
+            id: `mv-ret-${Date.now()}`,
+            createdAt: new Date().toISOString(),
+            type: "return_supplier",
+            warehouseId: moveWhId,
+            supplierId: moveForm.supplierId,
+            productId: moveForm.productId,
+            size: moveForm.size,
+            color: moveForm.color,
+            qty: moveForm.qty,
+            reason: moveForm.reason || `Trả hàng NCC: ${supplier?.name}`,
+        });
+        toast({ title: "Đã trả hàng cho NCC", description: `${moveForm.qty} x ${moveProduct.name} → ${supplier?.name}`, variant: "success" });
+        setReturnOpen(false);
+    };
+
+    const stockMoveFields = (
+        <div className="grid grid-cols-2 gap-3">
+            <div className="col-span-2">
+                <label className="mb-1 block text-xs font-medium text-slate-500">Kho khu vực</label>
+                <Select value={moveForm.regionId} onValueChange={(v) => setMoveForm((f) => ({ ...f, regionId: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        {REGIONAL_WAREHOUSES.map((w) => (
+                            <SelectItem key={w.id} value={w.regionId}>{w.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="col-span-2">
+                <label className="mb-1 block text-xs font-medium text-slate-500">Sản phẩm</label>
+                <Select
+                    value={moveForm.productId}
+                    onValueChange={(v) => {
+                        const p = getProduct(v)!;
+                        setMoveForm((f) => ({ ...f, productId: v, size: p.sizes[0], color: p.colors[0] }));
+                    }}
+                >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        {PRODUCTS.map((p) => (
+                            <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">Size</label>
+                <Select value={moveForm.size} onValueChange={(v) => setMoveForm((f) => ({ ...f, size: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        {moveProduct.sizes.map((s) => (<SelectItem key={s} value={s}>{s}</SelectItem>))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div>
+                <label className="mb-1 block text-xs font-medium text-slate-500">Màu</label>
+                <Select value={moveForm.color} onValueChange={(v) => setMoveForm((f) => ({ ...f, color: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        {moveProduct.colors.map((c) => (<SelectItem key={c} value={c}>{c}</SelectItem>))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <div className="col-span-2">
+                <label className="mb-1 block text-xs font-medium text-slate-500">Số lượng (tồn: {moveAvailable})</label>
+                <input
+                    type="number"
+                    min={1}
+                    value={moveForm.qty}
+                    onChange={(e) => setMoveForm((f) => ({ ...f, qty: Number(e.target.value) }))}
+                    className="h-9 w-full rounded-md border border-input bg-white px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                />
+            </div>
+            <div className="col-span-2">
+                <label className="mb-1 block text-xs font-medium text-slate-500">Ghi chú</label>
+                <input
+                    value={moveForm.reason}
+                    onChange={(e) => setMoveForm((f) => ({ ...f, reason: e.target.value }))}
+                    className="h-9 w-full rounded-md border border-input bg-white px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                />
+            </div>
+        </div>
+    );
+
+    const stockOutDialog = stockOutAccess.canWrite ? (
+        <Dialog open={outOpen} onOpenChange={setOutOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline">
+                    <PackageMinus size={16} className="mr-1.5" /> Xuất kho
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+                <DialogHeader><DialogTitle>Xuất kho khu vực</DialogTitle></DialogHeader>
+                {stockMoveFields}
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setOutOpen(false)}>Hủy</Button>
+                    <Button className="bg-custom text-white hover:bg-custom-hover" onClick={submitStockOut}>Xác nhận xuất</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    ) : null;
+
+    const returnSupplierDialog = stockOutAccess.canWrite ? (
+        <Dialog open={returnOpen} onOpenChange={setReturnOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline">
+                    <RotateCcw size={16} className="mr-1.5" /> Trả hàng NCC
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+                <DialogHeader><DialogTitle>Trả hàng cho nhà cung cấp</DialogTitle></DialogHeader>
+                <div className="space-y-3">
+                    <div>
+                        <label className="mb-1 block text-xs font-medium text-slate-500">Nhà cung cấp</label>
+                        <Select value={moveForm.supplierId} onValueChange={(v) => setMoveForm((f) => ({ ...f, supplierId: v }))}>
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                {SUPPLIERS.map((s) => (<SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {stockMoveFields}
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setReturnOpen(false)}>Hủy</Button>
+                    <Button className="bg-custom text-white hover:bg-custom-hover" onClick={submitReturnSupplier}>Xác nhận trả hàng</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    ) : null;
 
     const transferDialog = canTransfer ? (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -331,7 +529,13 @@ export default function WarehousePage() {
                             Kho khu vực (kho tổng vùng) và kho từng cửa hàng theo tỉnh thành
                         </p>
                     </div>
-                    {!lockedStoreId && transferAccess.canWrite && transferDialog}
+                    {!lockedStoreId && (
+                        <div className="flex flex-wrap gap-2">
+                            {stockOutDialog}
+                            {returnSupplierDialog}
+                            {transferAccess.canWrite && transferDialog}
+                        </div>
+                    )}
                 </div>
 
                 <AccessBanner access={storeAccess.isReadOnly ? storeAccess : regionalAccess} />
@@ -380,30 +584,41 @@ export default function WarehousePage() {
                             </Select>
                             {lockedStoreId && transferDialog}
                         </div>
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <StatCard label="Tồn kho cửa hàng" value={`${formatNumber(storeUnits)} sp`} icon={WarehouseIcon} accent="primary" />
                             <StatCard label="Mã sắp hết hàng" value={formatNumber(storeLow)} accent="amber" />
-                            <StatCard label="Kho" value={getWarehouse(storeWhId)?.name?.replace("Kho ", "") ?? "-"} accent="blue" />
                         </div>
                         {renderTable(storePager, LOW_STOCK_THRESHOLD * 3)}
                     </TabsContent>
                     )}
                 </Tabs>
 
-                {transfers.length > 0 && (
+                {(transfers.length > 0 || movements.length > 0) && (
                     <div className="rounded-xl border bg-white shadow-sm">
                         <div className="border-b px-5 py-3 text-sm font-semibold text-slate-700">
-                            Lịch sử điều chuyển trong phiên ({transfers.length})
+                            Lịch sử thao tác kho trong phiên
                         </div>
                         <div className="divide-y text-sm">
-                            {transfers.slice(0, 8).map((t) => (
+                            {transfers.slice(0, 5).map((t) => (
                                 <div key={t.id} className="flex items-center justify-between px-5 py-2.5">
                                     <span className="text-slate-700">
+                                        <Badge className="mr-2 bg-blue-100 text-blue-700 hover:bg-blue-100">Điều chuyển</Badge>
                                         {getProduct(t.productId)?.name} ({t.size}/{t.color}) × {t.qty}
                                     </span>
                                     <span className="text-slate-400">
                                         {getWarehouse(t.sourceWarehouseId)?.name} → {getStore(t.destWarehouseId.replace("wh-", ""))?.name}
                                     </span>
+                                </div>
+                            ))}
+                            {movements.slice(0, 5).map((m) => (
+                                <div key={m.id} className="flex items-center justify-between px-5 py-2.5">
+                                    <span className="text-slate-700">
+                                        <Badge className={`mr-2 ${m.type === "out" ? "bg-amber-100 text-amber-700 hover:bg-amber-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}`}>
+                                            {m.type === "out" ? "Xuất kho" : "Trả NCC"}
+                                        </Badge>
+                                        {getProduct(m.productId)?.name} ({m.size}/{m.color}) × {m.qty}
+                                    </span>
+                                    <span className="text-slate-400">{m.reason}</span>
                                 </div>
                             ))}
                         </div>

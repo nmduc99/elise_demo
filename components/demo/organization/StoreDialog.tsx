@@ -57,7 +57,6 @@ export default function StoreDialog({ open, onOpenChange, draft, setDraft, onSav
                     <div><label className={labelClass}>Điện thoại</label><input className={inputClass} value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} /></div>
                     <div><label className={labelClass}>Mục tiêu/tháng (đ)</label><input type="number" className={inputClass} value={draft.monthlyTarget} onChange={(e) => setDraft({ ...draft, monthlyTarget: Number(e.target.value) })} /></div>
                     <div><label className={labelClass}>Royalty (%)</label><input type="number" className={inputClass} value={draft.royaltyRate} onChange={(e) => setDraft({ ...draft, royaltyRate: Number(e.target.value) })} /></div>
-                    <div><label className={labelClass}>Diện tích (m²)</label><input type="number" className={inputClass} value={draft.areaM2} onChange={(e) => setDraft({ ...draft, areaM2: Number(e.target.value) })} /></div>
                     <div>
                         <label className={labelClass}>Trạng thái</label>
                         <Select value={draft.status ?? "active"} onValueChange={(v) => setDraft({ ...draft, status: v as StoreStatus })}>

@@ -38,6 +38,10 @@ const PAGE_TITLES: Record<string, Record<Locale, string>> = {
         en: "Staff",
         vi: "Nhân sự",
     },
+    "/staff/[id]": {
+        en: "Employee detail",
+        vi: "Chi tiết nhân viên",
+    },
     "/franchise": {
         en: "Franchise",
         vi: "Nhượng quyền",
@@ -49,6 +53,18 @@ const PAGE_TITLES: Record<string, Record<Locale, string>> = {
     "/pos": {
         en: "POS",
         vi: "Bán hàng POS",
+    },
+    "/transactions": {
+        en: "Transactions",
+        vi: "Giao dịch",
+    },
+    "/ledger": {
+        en: "Cash book",
+        vi: "Sổ quỹ",
+    },
+    "/permissions": {
+        en: "Permissions",
+        vi: "Phân quyền",
     },
     "/terms-and-privacy": {
         en: "Terms and Privacy",

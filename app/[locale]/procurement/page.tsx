@@ -6,7 +6,6 @@ import { useDemoAccess } from "@/components/demo/useDemoAccess";
 import RoleGuard from "@/components/demo/RoleGuard";
 import StatCard from "@/components/demo/StatCard";
 import SupplierDialog from "@/components/demo/procurement/SupplierDialog";
-import ContactDialog from "@/components/demo/procurement/ContactDialog";
 import PurchaseOrderDialog, { type PoDraft } from "@/components/demo/procurement/PurchaseOrderDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,10 +16,8 @@ import {
     REGIONAL_WAREHOUSES,
     REGIONS,
     SUPPLIERS,
-    SUPPLIER_CONTACTS,
     type PurchaseOrder,
     type Supplier,
-    type SupplierContact,
     getRegion,
     getWarehouse,
 } from "@/lib/demo/eliseData";
@@ -50,19 +47,21 @@ function newId(prefix: string): string {
     return `${prefix}-${Date.now().toString(36)}`;
 }
 
+function emptySupplier(): Supplier {
+    return { id: "", name: "", category: "", phone: "", regionId: REGIONS[0].id, contacts: [] };
+}
+
 export default function ProcurementPage() {
     const supplierAccess = useDemoAccess("suppliers");
     const { toast } = useToast();
 
     const suppliers = useCrudCollection<Supplier>("elise-demo-suppliers", SUPPLIERS);
-    const contacts = useCrudCollection<SupplierContact>("elise-demo-supplier-contacts", SUPPLIER_CONTACTS);
     const orders = useCrudCollection<PurchaseOrder>("elise-demo-purchase-orders", PURCHASE_ORDERS);
 
-    const supplierName = (id: string) => suppliers.items.find((s) => s.id === id)?.name ?? "-";
+    const supplierName = (id: string) => suppliers.items.find((s) => s.id === id)?.name ?? "—";
 
-    /* -------- Supplier dialog -------- */
     const [supOpen, setSupOpen] = useState(false);
-    const [supDraft, setSupDraft] = useState<Supplier>({ id: "", name: "", category: "", phone: "", regionId: REGIONS[0].id });
+    const [supDraft, setSupDraft] = useState<Supplier>(emptySupplier());
 
     const saveSupplier = () => {
         if (!supDraft.name.trim()) {
@@ -79,31 +78,6 @@ export default function ProcurementPage() {
         setSupOpen(false);
     };
 
-    /* -------- Contact dialog -------- */
-    const [conOpen, setConOpen] = useState(false);
-    const [conDraft, setConDraft] = useState<SupplierContact>({
-        id: "",
-        supplierId: SUPPLIERS[0].id,
-        name: "",
-        title: "",
-        phone: "",
-        email: "",
-    });
-
-    const saveContact = () => {
-        if (!conDraft.name.trim()) {
-            toast({ title: "Thiếu tên liên hệ", variant: "destructive" });
-            return;
-        }
-        if (conDraft.id) {
-            contacts.update(conDraft.id, conDraft);
-        } else {
-            contacts.add({ ...conDraft, id: newId("sc") });
-        }
-        setConOpen(false);
-    };
-
-    /* -------- Purchase order dialog -------- */
     const [poOpen, setPoOpen] = useState(false);
     const [poDraft, setPoDraft] = useState<PoDraft>({
         supplierId: SUPPLIERS[0].id,
@@ -113,6 +87,10 @@ export default function ProcurementPage() {
     });
 
     const createPo = () => {
+        if (!poDraft.supplierId) {
+            toast({ title: "Vui lòng chọn nhà cung cấp", variant: "destructive" });
+            return;
+        }
         const totalAmount = poDraft.units * poDraft.unitCost;
         orders.add({
             id: newId("po"),
@@ -153,7 +131,7 @@ export default function ProcurementPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Thu mua & Nhà cung cấp</h1>
                     <p className="text-sm text-slate-500">
-                        Quản lý nhà cung cấp, người liên hệ và đơn nhập hàng về kho khu vực
+                        Quản lý nhà cung cấp (kèm người liên hệ) và đơn nhập hàng về kho khu vực
                     </p>
                 </div>
 
@@ -169,23 +147,23 @@ export default function ProcurementPage() {
                 <Tabs defaultValue="suppliers">
                     <TabsList>
                         <TabsTrigger value="suppliers">Nhà cung cấp</TabsTrigger>
-                        <TabsTrigger value="contacts">Người liên hệ</TabsTrigger>
                         <TabsTrigger value="orders">Đơn nhập hàng</TabsTrigger>
                     </TabsList>
 
-                    {/* Suppliers */}
                     <TabsContent value="suppliers" className="space-y-3">
-                        <div className="flex justify-end">
-                            <Button
-                                className="bg-custom text-white hover:bg-custom-hover"
-                                onClick={() => {
-                                    setSupDraft({ id: "", name: "", category: "", phone: "", regionId: REGIONS[0].id });
-                                    setSupOpen(true);
-                                }}
-                            >
-                                <Plus size={16} className="mr-1.5" /> Thêm nhà cung cấp
-                            </Button>
-                        </div>
+                        <WriteGuard permission="suppliers">
+                            <div className="flex justify-end">
+                                <Button
+                                    className="bg-custom text-white hover:bg-custom-hover"
+                                    onClick={() => {
+                                        setSupDraft(emptySupplier());
+                                        setSupOpen(true);
+                                    }}
+                                >
+                                    <Plus size={16} className="mr-1.5" /> Thêm nhà cung cấp
+                                </Button>
+                            </div>
+                        </WriteGuard>
                         <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
                             <table className="w-full text-sm">
                                 <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
@@ -193,6 +171,7 @@ export default function ProcurementPage() {
                                         <th className="px-4 py-3 font-medium">Nhà cung cấp</th>
                                         <th className="px-4 py-3 font-medium">Nhóm hàng</th>
                                         <th className="px-4 py-3 font-medium">Điện thoại</th>
+                                        <th className="px-4 py-3 font-medium">Người liên hệ</th>
                                         <th className="px-4 py-3 font-medium">Khu vực</th>
                                         <th className="px-4 py-3 text-center font-medium">Thao tác</th>
                                     </tr>
@@ -203,12 +182,37 @@ export default function ProcurementPage() {
                                             <td className="px-4 py-3 font-medium text-slate-800">{s.name}</td>
                                             <td className="px-4 py-3 text-slate-600">{s.category}</td>
                                             <td className="px-4 py-3 text-slate-600">{s.phone}</td>
+                                            <td className="px-4 py-3 text-slate-600">
+                                                {s.contacts?.length ? (
+                                                    <div className="space-y-0.5">
+                                                        {s.contacts.slice(0, 2).map((c, i) => (
+                                                            <div key={i} className="flex items-center gap-1 text-xs">
+                                                                <Users size={12} className="text-slate-400" />
+                                                                <span>{c.name}</span>
+                                                                {c.phone && (
+                                                                    <span className="text-slate-400">
+                                                                        <Phone size={10} className="inline mr-0.5" />
+                                                                        {c.phone}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                        {s.contacts.length > 2 && (
+                                                            <span className="text-xs text-slate-400">+{s.contacts.length - 2} liên hệ</span>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-slate-400">—</span>
+                                                )}
+                                            </td>
                                             <td className="px-4 py-3 text-slate-600">{getRegion(s.regionId)?.name}</td>
                                             <td className="px-4 py-3">
-                                                <div className="flex items-center justify-center gap-1">
-                                                    <button onClick={() => { setSupDraft(s); setSupOpen(true); }} className="rounded p-1.5 text-blue-600 hover:bg-blue-50"><Pencil size={16} /></button>
-                                                    <button onClick={() => suppliers.remove(s.id)} className="rounded p-1.5 text-rose-500 hover:bg-rose-50"><Trash2 size={16} /></button>
-                                                </div>
+                                                <WriteGuard permission="suppliers">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <button onClick={() => { setSupDraft({ ...s, contacts: s.contacts ?? [] }); setSupOpen(true); }} className="rounded p-1.5 text-blue-600 hover:bg-blue-50"><Pencil size={16} /></button>
+                                                        <button onClick={() => suppliers.remove(s.id)} className="rounded p-1.5 text-rose-500 hover:bg-rose-50"><Trash2 size={16} /></button>
+                                                    </div>
+                                                </WriteGuard>
                                             </td>
                                         </tr>
                                     ))}
@@ -226,58 +230,26 @@ export default function ProcurementPage() {
                         </div>
                     </TabsContent>
 
-                    {/* Contacts */}
-                    <TabsContent value="contacts" className="space-y-3">
-                        <div className="flex justify-end">
-                            <Button
-                                className="bg-custom text-white hover:bg-custom-hover"
-                                onClick={() => {
-                                    setConDraft({ id: "", supplierId: suppliers.items[0]?.id ?? "", name: "", title: "", phone: "", email: "" });
-                                    setConOpen(true);
-                                }}
-                            >
-                                <Plus size={16} className="mr-1.5" /> Thêm liên hệ
-                            </Button>
-                        </div>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                            {contacts.items.map((c) => (
-                                <div key={c.id} className="rounded-xl border bg-white p-4 shadow-sm">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-100 text-custom"><Users size={16} /></span>
-                                            <div>
-                                                <p className="font-semibold text-slate-800">{c.name}</p>
-                                                <p className="text-xs text-slate-400">{c.title}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <button onClick={() => { setConDraft(c); setConOpen(true); }} className="rounded p-1.5 text-blue-600 hover:bg-blue-50"><Pencil size={14} /></button>
-                                            <button onClick={() => contacts.remove(c.id)} className="rounded p-1.5 text-rose-500 hover:bg-rose-50"><Trash2 size={14} /></button>
-                                        </div>
-                                    </div>
-                                    <div className="mt-3 space-y-1 text-xs text-slate-500">
-                                        <p>{supplierName(c.supplierId)}</p>
-                                        <p className="flex items-center gap-1.5"><Phone size={12} /> {c.phone}</p>
-                                        <p className="truncate">{c.email}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </TabsContent>
-
-                    {/* Purchase orders */}
                     <TabsContent value="orders" className="space-y-3">
-                        <div className="flex justify-end">
-                            <Button
-                                className="bg-custom text-white hover:bg-custom-hover"
-                                onClick={() => {
-                                    setPoDraft({ supplierId: suppliers.items[0]?.id ?? "", warehouseId: REGIONAL_WAREHOUSES[0].id, units: 200, unitCost: 350_000 });
-                                    setPoOpen(true);
-                                }}
-                            >
-                                <Plus size={16} className="mr-1.5" /> Tạo đơn nhập
-                            </Button>
-                        </div>
+                        <WriteGuard permission="suppliers">
+                            <div className="flex justify-end">
+                                <Button
+                                    className="bg-custom text-white hover:bg-custom-hover"
+                                    onClick={() => {
+                                        setPoDraft({
+                                            supplierId: suppliers.items[0]?.id ?? "",
+                                            warehouseId: REGIONAL_WAREHOUSES[0].id,
+                                            units: 200,
+                                            unitCost: 350_000,
+                                        });
+                                        setPoOpen(true);
+                                    }}
+                                    disabled={suppliers.items.length === 0}
+                                >
+                                    <Plus size={16} className="mr-1.5" /> Tạo đơn nhập
+                                </Button>
+                            </div>
+                        </WriteGuard>
                         <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
                             <table className="w-full text-sm">
                                 <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
@@ -306,9 +278,11 @@ export default function ProcurementPage() {
                                             </td>
                                             <td className="px-4 py-3 text-center">
                                                 {o.status !== "received" ? (
-                                                    <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => receivePo(o)}>
-                                                        <PackageCheck size={14} className="mr-1" /> Nhận hàng
-                                                    </Button>
+                                                    <WriteGuard permission="stock_in">
+                                                        <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => receivePo(o)}>
+                                                            <PackageCheck size={14} className="mr-1" /> Nhận hàng
+                                                        </Button>
+                                                    </WriteGuard>
                                                 ) : (
                                                     <span className="text-xs text-slate-400">—</span>
                                                 )}
@@ -337,15 +311,6 @@ export default function ProcurementPage() {
                 draft={supDraft}
                 setDraft={setSupDraft}
                 onSave={saveSupplier}
-            />
-
-            <ContactDialog
-                open={conOpen}
-                onOpenChange={setConOpen}
-                draft={conDraft}
-                setDraft={setConDraft}
-                onSave={saveContact}
-                suppliers={suppliers.items}
             />
 
             <PurchaseOrderDialog

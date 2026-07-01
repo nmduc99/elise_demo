@@ -4,13 +4,12 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import {
     accessLabel,
     canWriteLevel,
-    getAccessLevel,
-    isProposeOnly as checkPropose,
     isReadOnlyLevel,
     isStoreScopedLevel,
     type AccessLevel,
     type PermissionKey,
 } from "@/lib/demo/permissions";
+import { getEffectiveAccessLevel } from "@/lib/demo/permissionOverrides";
 import { getRoleFromUser, type DemoRole } from "@/lib/demo/roles";
 
 export interface DemoAccess {
@@ -28,7 +27,7 @@ export interface DemoAccess {
 export function useDemoAccess(key: PermissionKey): DemoAccess {
     const { user } = useAuth();
     const role = getRoleFromUser(user);
-    const level = getAccessLevel(role, key);
+    const level = getEffectiveAccessLevel(role, key);
 
     return {
         role,
@@ -37,7 +36,7 @@ export function useDemoAccess(key: PermissionKey): DemoAccess {
         canWrite: canWriteLevel(level),
         isReadOnly: isReadOnlyLevel(level),
         isMonitor: level === "monitor",
-        isProposeOnly: checkPropose(role, key),
+        isProposeOnly: level === "propose",
         isStoreScoped: isStoreScopedLevel(level),
         label: accessLabel(level),
     };

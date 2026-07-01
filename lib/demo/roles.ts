@@ -7,15 +7,13 @@ export type DemoRole =
     | "director"
     | "accountant"
     | "procurement"
-    | "store_manager"
-    | "franchise_monitor";
+    | "store_manager";
 
 export const DEMO_ROLES: DemoRole[] = [
     "director",
     "accountant",
     "procurement",
     "store_manager",
-    "franchise_monitor",
 ];
 
 export interface DemoUser {
@@ -41,7 +39,6 @@ export const ROLE_LABELS: Record<DemoRole, string> = {
     accountant: "Kế toán",
     procurement: "Phòng thu mua",
     store_manager: "Quản lý cửa hàng",
-    franchise_monitor: "Theo dõi cửa hàng nhượng quyền",
 };
 
 export const ROLE_DESCRIPTIONS: Record<DemoRole, string> = {
@@ -49,7 +46,6 @@ export const ROLE_DESCRIPTIONS: Record<DemoRole, string> = {
     accountant: "Theo dõi doanh thu, lợi nhuận, kho và bảng lương toàn chuỗi.",
     procurement: "Quản lý nhà cung cấp, sản phẩm, đặt hàng và kho khu vực.",
     store_manager: "Quản lý một cửa hàng: bán hàng, kho cửa hàng và nhân sự tại chỗ.",
-    franchise_monitor: "Theo dõi riêng các cửa hàng nhượng quyền: doanh thu, phí royalty, báo cáo.",
 };
 
 /**
@@ -100,17 +96,6 @@ export const DEMO_USERS: Record<DemoRole, DemoUser> = {
         storeId: "st-hn-01",
         isActive: true,
         createdAt: "2019-03-12",
-    },
-    franchise_monitor: {
-        id: "demo-franchise-monitor",
-        account: "nhuongquyen",
-        password: "Elise@2024",
-        fullName: "Đinh Hoàng Nam",
-        email: "nam.nhuongquyen@elise.vn",
-        phoneNumber: "0901 000 005",
-        roles: ["franchise_monitor"],
-        isActive: true,
-        createdAt: "2020-07-20",
     },
 };
 

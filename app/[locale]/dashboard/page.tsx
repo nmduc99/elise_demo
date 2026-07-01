@@ -86,10 +86,20 @@ export default function DashboardPage() {
     }
 
     return (
-        <RoleGuard permission="dashboard_chain">
-            <ChainDashboard />
+        <RoleGuard permission={["dashboard_chain", "dashboard_store"]}>
+            <ChainDashboardWithStoreView />
         </RoleGuard>
     );
+}
+
+function ChainDashboardWithStoreView() {
+    const scope = useDemoScope();
+
+    if (scope.storeId) {
+        return <StoreManagerDashboard storeId={scope.storeId} showBackHint />;
+    }
+
+    return <ChainDashboard />;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -262,7 +272,7 @@ interface SmSale {
     createdAt: string;
 }
 
-function StoreManagerDashboard({ storeId }: { storeId: string }) {
+function StoreManagerDashboard({ storeId, showBackHint }: { storeId: string; showBackHint?: boolean }) {
     const store = getStore(storeId);
     const [sales] = useLocalCollection<SmSale>("elise-demo-sales");
 
@@ -294,7 +304,12 @@ function StoreManagerDashboard({ storeId }: { storeId: string }) {
         <div className="w-full space-y-6 p-4 md:p-6">
             <div>
                 <h1 className="text-2xl font-bold text-slate-900">Tổng quan cửa hàng</h1>
-                <p className="text-sm text-slate-500">{store?.name} · {store?.address}</p>
+                <p className="text-sm text-slate-500">
+                    {store?.name} · {store?.address}
+                    {showBackHint && (
+                        <span className="ml-2 text-xs text-custom">(Chọn &quot;Tất cả cửa hàng&quot; ở bộ lọc để xem tổng quan chuỗi)</span>
+                    )}
+                </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

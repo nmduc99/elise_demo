@@ -7,8 +7,6 @@ import StatCard from "@/components/demo/StatCard";
 import { ScopeFilter, useDemoScope } from "@/components/demo/ScopeFilter";
 import { DoughnutChart, ELISE_COLORS } from "@/components/demo/DemoCharts";
 import EmployeeFormDialog from "@/components/demo/staff/EmployeeFormDialog";
-import EmployeeDetailDialog from "@/components/demo/staff/EmployeeDetailDialog";
-import TransferDialog from "@/components/demo/staff/TransferDialog";
 import {
   DepartmentDialog,
   PositionDialog,
@@ -30,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "@/i18n/routing";
 import {
   DEPARTMENTS,
   EMPLOYEES,
@@ -44,11 +43,9 @@ import Pagination from "@/components/demo/Pagination";
 import { usePagination } from "@/lib/demo/usePagination";
 import { useCrudCollection } from "@/lib/demo/useCrudCollection";
 import {
-  ArrowLeftRight,
   BadgeCheck,
   Briefcase,
   Building,
-  Eye,
   Pencil,
   Plus,
   Trash2,
@@ -89,6 +86,7 @@ function emptyEmployee(storeId: string): Employee {
 export default function StaffPage() {
   const scope = useDemoScope();
   const hrAccess = useDemoAccess("hr");
+  const router = useRouter();
   const { toast } = useToast();
 
   const employees = useCrudCollection<Employee>(
@@ -169,27 +167,6 @@ export default function StaffPage() {
       });
     }
     setEmpOpen(false);
-  };
-
-  /* -------- Detail dialog -------- */
-  const [detail, setDetail] = useState<Employee | null>(null);
-
-  /* -------- Transfer dialog -------- */
-  const [transfer, setTransfer] = useState<Employee | null>(null);
-  const [transferTo, setTransferTo] = useState<string>(STORES[0].id);
-  const doTransfer = () => {
-    if (!transfer) return;
-    const toStore = getStore(transferTo);
-    employees.update(transfer.id, {
-      storeId: transferTo,
-      regionId: toStore?.regionId ?? transfer.regionId,
-    });
-    toast({
-      title: "Đã điều chuyển nhân viên",
-      description: `${transfer.name} → ${toStore?.name}`,
-      variant: "success",
-    });
-    setTransfer(null);
   };
 
   /* -------- Department / Position dialogs -------- */
@@ -329,18 +306,17 @@ export default function StaffPage() {
                     <th className="px-4 py-3 text-center font-medium">
                       Trạng thái
                     </th>
-                    <th className="px-4 py-3 text-center font-medium">
-                      Thao tác
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
                   {employeePage.pageItems.map((e) => (
-                    <tr key={e.id} className="hover:bg-slate-50">
+                    <tr
+                      key={e.id}
+                      className="cursor-pointer hover:bg-orange-50/50"
+                      onClick={() => router.push({ pathname: "/staff/[id]", params: { id: e.id } })}
+                    >
                       <td className="px-4 py-3 text-slate-400">{e.code}</td>
-                      <td className="px-4 py-3 font-medium text-slate-800">
-                        {e.name}
-                      </td>
+                      <td className="px-4 py-3 font-medium text-custom">{e.name}</td>
                       <td className="px-4 py-3 text-slate-600">
                         {getStore(e.storeId)?.name}
                         <span className="block text-xs text-slate-400">
@@ -358,45 +334,6 @@ export default function StaffPage() {
                         <Badge className={STATUS_CLASS[e.status]}>
                           {STATUS_LABEL[e.status]}
                         </Badge>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-center gap-1">
-                          <button
-                            onClick={() => setDetail(e)}
-                            className="rounded p-1.5 text-slate-500 hover:bg-slate-100"
-                            title="Hồ sơ"
-                          >
-                            <Eye size={16} />
-                          </button>
-                          {hrAccess.canWrite && (
-                            <>
-                              <button
-                                onClick={() => {
-                                  setTransfer(e);
-                                  setTransferTo(e.storeId);
-                                }}
-                                className="rounded p-1.5 text-amber-600 hover:bg-amber-50"
-                                title="Điều chuyển"
-                              >
-                                <ArrowLeftRight size={16} />
-                              </button>
-                              <button
-                                onClick={() => openEmp(e)}
-                                className="rounded p-1.5 text-blue-600 hover:bg-blue-50"
-                                title="Sửa"
-                              >
-                                <Pencil size={16} />
-                              </button>
-                              <button
-                                onClick={() => employees.remove(e.id)}
-                                className="rounded p-1.5 text-rose-500 hover:bg-rose-50"
-                                title="Xóa"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </>
-                          )}
-                        </div>
                       </td>
                     </tr>
                   ))}
@@ -561,16 +498,6 @@ export default function StaffPage() {
         positions={positions.items}
         storeOptions={storeOptions}
         lockStore={!!scope.scopedStoreId}
-      />
-
-      <EmployeeDetailDialog employee={detail} onClose={() => setDetail(null)} />
-
-      <TransferDialog
-        employee={transfer}
-        transferTo={transferTo}
-        setTransferTo={setTransferTo}
-        onClose={() => setTransfer(null)}
-        onConfirm={doTransfer}
       />
 
       <DepartmentDialog

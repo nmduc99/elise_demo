@@ -12,6 +12,9 @@
             "franchise": "Nhượng quyền",
             "hr": "Nhân sự",
             "reports": "Báo cáo",
+            "transactions": "Giao dịch",
+            "ledger": "Sổ quỹ",
+            "permissions": "Phân quyền",
             "analytics": "Phân tích lợi nhuận",
             "pos": "Bán hàng"
         }

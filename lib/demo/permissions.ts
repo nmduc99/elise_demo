@@ -29,6 +29,8 @@ export type PermissionKey =
     | "stock_transfer"
     | "pos"
     | "invoices"
+    | "transactions"
+    | "ledger"
     | "report_revenue"
     | "report_profit"
     | "report_inventory"
@@ -45,6 +47,9 @@ export type NavPermissionKey =
     | "hr"
     | "franchise"
     | "reports"
+    | "transactions"
+    | "ledger"
+    | "permissions"
     | "pos";
 
 const MATRIX: Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> = {
@@ -62,6 +67,8 @@ const MATRIX: Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> = {
         stock_transfer: "full",
         pos: "monitor",
         invoices: "full",
+        transactions: "full",
+        ledger: "full",
         report_revenue: "full",
         report_profit: "full",
         report_inventory: "full",
@@ -70,7 +77,7 @@ const MATRIX: Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> = {
     },
     accountant: {
         dashboard_chain: "full",
-        dashboard_store: "none",
+        dashboard_store: "view",
         organization: "none",
         hr: "view",
         products: "view",
@@ -82,6 +89,8 @@ const MATRIX: Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> = {
         stock_transfer: "none",
         pos: "view",
         invoices: "full",
+        transactions: "view",
+        ledger: "full",
         report_revenue: "full",
         report_profit: "full",
         report_inventory: "full",
@@ -102,6 +111,8 @@ const MATRIX: Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> = {
         stock_transfer: "full",
         pos: "none",
         invoices: "view",
+        transactions: "view",
+        ledger: "none",
         report_revenue: "none",
         report_profit: "none",
         report_inventory: "full",
@@ -122,31 +133,13 @@ const MATRIX: Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> = {
         stock_transfer: "propose",
         pos: "full",
         invoices: "store",
+        transactions: "store",
+        ledger: "store",
         report_revenue: "store",
         report_profit: "none",
         report_inventory: "store",
         users_rbac: "none",
         franchise: "none",
-    },
-    franchise_monitor: {
-        dashboard_chain: "full",
-        dashboard_store: "none",
-        organization: "none",
-        hr: "none",
-        products: "view",
-        suppliers: "none",
-        warehouse_regional: "none",
-        warehouse_store: "view",
-        stock_in: "none",
-        stock_out: "none",
-        stock_transfer: "none",
-        pos: "none",
-        invoices: "view",
-        report_revenue: "full",
-        report_profit: "none",
-        report_inventory: "view",
-        users_rbac: "none",
-        franchise: "full",
     },
 };
 
@@ -159,8 +152,40 @@ const NAV_KEY_MAP: Record<NavPermissionKey, PermissionKey[]> = {
     hr: ["hr"],
     franchise: ["franchise"],
     reports: ["report_revenue", "report_profit", "report_inventory", "invoices"],
+    transactions: ["transactions"],
+    ledger: ["ledger"],
+    permissions: ["users_rbac"],
     pos: ["pos"],
 };
+
+export const PERMISSION_LABELS: Record<PermissionKey, string> = {
+    dashboard_chain: "Dashboard chuỗi",
+    dashboard_store: "Dashboard cửa hàng",
+    organization: "Tổ chức",
+    hr: "Nhân sự",
+    products: "Sản phẩm",
+    suppliers: "Nhà cung cấp / Thu mua",
+    warehouse_regional: "Kho khu vực",
+    warehouse_store: "Kho cửa hàng",
+    stock_in: "Nhập kho",
+    stock_out: "Xuất kho",
+    stock_transfer: "Điều chuyển kho",
+    pos: "Bán hàng POS",
+    invoices: "Hóa đơn",
+    transactions: "Giao dịch",
+    ledger: "Sổ quỹ",
+    report_revenue: "Báo cáo doanh thu",
+    report_profit: "Báo cáo lợi nhuận",
+    report_inventory: "Báo cáo tồn kho",
+    users_rbac: "Phân quyền",
+    franchise: "Nhượng quyền",
+};
+
+export const ACCESS_LEVEL_OPTIONS: AccessLevel[] = ["none", "view", "monitor", "propose", "store", "full"];
+
+export function getMatrix(): Record<DemoRole, Partial<Record<PermissionKey, AccessLevel>>> {
+    return MATRIX;
+}
 
 export function getAccessLevel(
     role: DemoRole | null | undefined,
@@ -227,10 +252,5 @@ export function accessLabel(level: AccessLevel): string | null {
  * a single store.
  */
 export function isChainWide(role: DemoRole | null | undefined): boolean {
-    return (
-        role === "director" ||
-        role === "accountant" ||
-        role === "procurement" ||
-        role === "franchise_monitor"
-    );
+    return role === "director" || role === "accountant" || role === "procurement";
 }
