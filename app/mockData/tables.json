@@ -1,0 +1,210 @@
+[
+    {
+        "id": "table-1",
+        "name": "Bàn 1",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-2",
+        "name": "Bàn 2",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-3",
+        "name": "Bàn 3",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-4",
+        "name": "Bàn 4",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-5",
+        "name": "Bàn 5",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-6",
+        "name": "Bàn 6",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-7",
+        "name": "Bàn 7",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-8",
+        "name": "Bàn 8",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-9",
+        "name": "Bàn 9",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-10",
+        "name": "Bàn 10",
+        "area": "Lầu 2",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-11",
+        "name": "Bàn 11",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-12",
+        "name": "Bàn 12",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-13",
+        "name": "Bàn 13",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-14",
+        "name": "Bàn 14",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-15",
+        "name": "Bàn 15",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-16",
+        "name": "Bàn 16",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-17",
+        "name": "Bàn 17",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-18",
+        "name": "Bàn 18",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-19",
+        "name": "Bàn 19",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "table-20",
+        "name": "Bàn 20",
+        "area": "Lầu 3",
+        "status": "available",
+        "seats": 4,
+        "type": "table"
+    },
+    {
+        "id": "vip-1",
+        "name": "Phòng VIP 1",
+        "area": "Phòng VIP",
+        "status": "available",
+        "seats": 8,
+        "type": "table"
+    },
+    {
+        "id": "vip-2",
+        "name": "Phòng VIP 2",
+        "area": "Phòng VIP",
+        "status": "available",
+        "seats": 8,
+        "type": "table"
+    },
+    {
+        "id": "vip-3",
+        "name": "Phòng VIP 3",
+        "area": "Phòng VIP",
+        "status": "available",
+        "seats": 8,
+        "type": "table"
+    },
+    {
+        "id": "vip-4",
+        "name": "Phòng VIP 4",
+        "area": "Phòng VIP",
+        "status": "available",
+        "seats": 8,
+        "type": "table"
+    },
+    {
+        "id": "vip-5",
+        "name": "Phòng VIP 5",
+        "area": "Phòng VIP",
+        "status": "available",
+        "seats": 8,
+        "type": "table"
+    },
+    {
+        "id": "vip-10",
+        "name": "Phòng VIP 10",
+        "area": "Phòng VIP",
+        "status": "available",
+        "seats": 8,
+        "type": "table"
+    }
+]

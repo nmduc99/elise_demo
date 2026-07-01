@@ -1,0 +1,419 @@
+# Code Generation Rules for BMG Inventory Management Frontend
+
+## 📋 Tổng quan dự án
+
+Đây là một dự án Next.js 16+ với TypeScript, sử dụng App Router, hỗ trợ đa ngôn ngữ (Tiếng Việt & English), và tích hợp nhiều tính năng quản lý kho hàng.
+
+## 🏗️ Cấu trúc dự án
+
+### Thư mục chính:
+
+- `app/[locale]/` - Next.js App Router với internationalization
+- `components/` - React components (theo feature/module)
+- `lib/` - Utilities và helpers
+- `types/` - TypeScript type definitions
+- `hooks/` - Custom React hooks
+- `languages/` - Translation files (vi.json, en.json)
+- `config/` - Configuration files
+- `docs/` - Documentation files
+
+### Quy tắc đặt tên file:
+
+- **Components**: PascalCase (ví dụ: `StockReturnSidebar.tsx`)
+- **Hooks**: camelCase với prefix `use` (ví dụ: `useStockReturnPayments.ts`)
+- **Utils**: camelCase (ví dụ: `stockReturnUtils.ts`)
+- **Types**: camelCase (ví dụ: `purchaseReturn.ts`)
+- **Pages**: `page.tsx` (Next.js convention)
+- **Routes**: kebab-case cho slugs (ví dụ: `/stock-return`)
+
+## ⚛️ React Component Patterns
+
+### 1. Component Structure
+
+```typescript
+"use client"; // Luôn thêm cho client components
+
+import { Component } from "@/components/ui/component";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+
+interface ComponentProps {
+  // Props với TypeScript interface
+  prop1: string;
+  prop2?: number; // Optional props
+}
+
+export default function ComponentName({ prop1, prop2 }: ComponentProps) {
+  const t = useTranslations("namespace");
+  // Component logic
+  return <div>...</div>;
+}
+```
+
+### 2. Component Composition
+
+- **Tách component lớn thành các component nhỏ**: Ví dụ `StockReturnSidebar` được tách thành:
+
+  - `StockReturnSidebarHeader`
+  - `StockReturnSidebarSupplier`
+  - `StockReturnSidebarFinancial`
+  - `StockReturnSidebarActions`
+
+- **Custom hooks cho logic phức tạp**: Tách logic ra hooks riêng (ví dụ: `useStockReturnPayments`, `useStockReturnSupplier`)
+
+### 3. Props Interface
+
+- Luôn định nghĩa interface cho props
+- Sử dụng TypeScript strict mode
+- Optional props sử dụng `?`
+- Default values trong destructuring: `prop = defaultValue`
+
+### 4. State Management
+
+- Sử dụng `useState` cho local state
+- Sử dụng `useMemo` cho computed values
+- Sử dụng `useCallback` cho functions được pass xuống children
+- Sử dụng `useRef` cho DOM refs và values không trigger re-render
+
+## 🌐 Internationalization (i18n)
+
+### Translation Pattern
+
+```typescript
+import { useTranslations } from "next-intl";
+
+// Trong component
+const t = useTranslations("namespace"); // namespace như "stockReturn.form"
+const title = t("title"); // Key trong translation file
+```
+
+### Translation Files
+
+- `languages/vi.json` - Tiếng Việt
+- `languages/en.json` - English
+- Luôn thêm translation cho cả 2 ngôn ngữ
+- Sử dụng nested structure: `"stockReturn": { "form": { "title": "..." } }`
+
+### Route i18n
+
+- Cập nhật `i18n/routing.ts` khi thêm route mới
+- Routes sử dụng kebab-case: `/stock-return`, `/stock-in`
+
+## 📝 TypeScript Conventions
+
+### Type Definitions
+
+- Types được định nghĩa trong `types/` folder
+- File naming: camelCase (ví dụ: `purchaseReturn.ts`)
+- Export types và interfaces
+
+```typescript
+// types/purchaseReturn.ts
+export interface PurchaseReturn {
+  id: string;
+  code: string;
+  // ...
+}
+
+export interface PurchaseReturnLine {
+  // ...
+}
+```
+
+### Import Paths
+
+- Sử dụng `@/` alias cho absolute imports
+- `@/components` - Components
+- `@/lib` - Utilities
+- `@/types` - Types
+- `@/hooks` - Hooks
+
+## 📐 Code Formatting & Indentation
+
+### Indentation Rules
+
+- **Mặc định sử dụng 4 spaces** cho indentation (không dùng tabs)
+- Áp dụng cho tất cả file TypeScript, TypeScript React, JSON, và các file code khác
+- Mỗi level indentation = 4 spaces
+
+```typescript
+// ✅ Đúng - 4 spaces
+function example() {
+  const value = "test";
+  if (condition) {
+    return value;
+  }
+}
+
+// ❌ Sai - 2 spaces hoặc tabs
+function example() {
+  const value = "test";
+  if (condition) {
+    return value;
+  }
+}
+```
+
+### Formatting Rules
+
+- Sử dụng 4 spaces cho indentation
+- Trailing commas trong objects và arrays khi multi-line
+- Semicolons ở cuối statements
+- Single quotes cho strings (hoặc double quotes nếu consistent với codebase)
+- Line length: giữ dưới 100-120 characters khi có thể
+
+## 🎨 Styling Conventions
+
+### Tailwind CSS
+
+- Sử dụng Tailwind CSS utility classes
+- Không sử dụng inline styles
+- Sử dụng `clsx` hoặc `cn` (từ `@/lib/utils`) cho conditional classes
+
+```typescript
+import { cn } from "@/lib/utils";
+
+<div className={cn(
+  "base-classes",
+  condition && "conditional-classes",
+  anotherCondition && "more-classes"
+)}>
+```
+
+### UI Components
+
+- Sử dụng shadcn/ui components từ `@/components/ui/`
+- Components đã được cấu hình trong `components.json`
+- Style: "new-york"
+- Icons: lucide-react
+
+## 🔌 API Patterns
+
+### API Client
+
+- Sử dụng `fetchWithLocale` từ `@/lib/fetchWithLocale` cho API calls
+- Hoặc `apiFetch` từ `@/lib/apiClient` nếu cần
+- Luôn handle errors với try-catch
+- Sử dụng SWR cho data fetching khi cần caching
+
+```typescript
+import { fetchWithLocale } from "@/lib/fetchWithLocale";
+import useSWR from "swr";
+
+const fetcher = async (url: string) => {
+  const data = await fetchWithLocale(url);
+  return data;
+};
+
+const { data, mutate } = useSWR("/api/endpoint", fetcher);
+```
+
+### Error Handling
+
+- Sử dụng `useToast` hook cho notifications
+- Hiển thị error messages từ translation files
+
+```typescript
+import { useToast } from "@/hooks/use-toast";
+
+const { toast } = useToast();
+toast({
+  title: t("error.title"),
+  description: t("error.description"),
+  variant: "destructive",
+});
+```
+
+## 🪝 Custom Hooks Patterns
+
+### Hook Structure
+
+```typescript
+// hooks/useFeatureName.ts hoặc trong component folder
+interface UseFeatureNameProps {
+  prop1: string;
+  prop2?: number;
+}
+
+export function useFeatureName({ prop1, prop2 }: UseFeatureNameProps) {
+  const [state, setState] = useState();
+
+  // Hook logic
+
+  return {
+    // Return values
+  };
+}
+```
+
+### Common Hooks
+
+- `useToast` - Toast notifications
+- `useProductSearch` - Product search functionality
+- `useAuth` - Authentication context
+- Feature-specific hooks trong component folders
+
+## 📦 Component Organization
+
+### Feature-based Structure
+
+```
+components/
+  stock-return/
+    StockReturnSidebar.tsx
+    StockReturnForm.tsx
+    StockReturnTable.tsx
+    useStockReturnPayments.ts
+    useStockReturnSupplier.ts
+    stockReturnUtils.ts
+```
+
+### Component Types
+
+1. **Page Components**: Trong `app/[locale]/[feature]/page.tsx`
+2. **Feature Components**: Trong `components/[feature]/`
+3. **UI Components**: Trong `components/ui/` (shadcn/ui)
+4. **Shared Components**: Trong `components/` root level
+
+## 🔄 Form Patterns
+
+### React Hook Form + Zod
+
+```typescript
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+
+const schema = z.object({
+  field1: z.string().min(1),
+  field2: z.number(),
+});
+
+const form = useForm({
+  resolver: zodResolver(schema),
+  defaultValues: {
+    field1: "",
+    field2: 0,
+  },
+});
+```
+
+## 🎯 Best Practices
+
+### 1. Code Organization
+
+- Một component một file
+- Tách logic phức tạp ra custom hooks
+- Utils functions trong file riêng
+
+### 2. Performance
+
+- Sử dụng `useMemo` cho expensive computations
+- Sử dụng `useCallback` cho event handlers được pass xuống
+- Lazy loading cho heavy components
+
+### 3. Accessibility
+
+- Sử dụng semantic HTML
+- ARIA labels khi cần
+- Keyboard navigation support
+
+### 4. Error Boundaries
+
+- Handle errors gracefully
+- User-friendly error messages
+- Log errors for debugging
+
+### 5. Loading States
+
+- Hiển thị loading indicators
+- Skeleton screens cho better UX
+- Disable buttons khi đang process
+
+## 📱 Responsive Design
+
+- Mobile-first approach
+- Sử dụng Tailwind responsive classes: `sm:`, `md:`, `lg:`, `xl:`
+- Test trên nhiều screen sizes
+
+## 🔐 Authentication
+
+- Sử dụng `useAuth` hook từ `@/components/auth/AuthProvider`
+- Check authentication trước khi render protected content
+- Handle token expiration
+
+## 📊 Data Tables
+
+- Sử dụng custom table components
+- Support sorting, filtering, pagination
+- Export functionality khi cần
+- Column visibility controls
+
+## 🎨 UI/UX Patterns
+
+### Modals
+
+- Sử dụng `CustomModal` hoặc Radix UI Dialog
+- Consistent modal patterns across features
+
+### Sidebars
+
+- Sidebar pattern cho forms (như StockReturnSidebar)
+- Collapsible sections khi cần
+
+### Tables
+
+- Expandable rows cho details
+- Action buttons trong rows
+- Bulk actions khi cần
+
+## 🚫 Anti-patterns (Tránh)
+
+1. ❌ Không sử dụng inline styles
+2. ❌ Không hardcode strings (phải dùng translations)
+3. ❌ Không tạo components quá lớn (tách nhỏ ra)
+4. ❌ Không duplicate code (tạo reusable components/hooks)
+5. ❌ Không ignore TypeScript errors
+6. ❌ Không commit console.logs
+7. ❌ Không sử dụng `any` type (sử dụng proper types)
+8. ❌ Không sử dụng tabs hoặc 2 spaces cho indentation (phải dùng 4 spaces)
+
+## ✅ Checklist khi tạo component mới
+
+- [ ] Component có "use client" directive nếu cần
+- [ ] Props interface được định nghĩa
+- [ ] Translations được thêm vào cả vi.json và en.json
+- [ ] Sử dụng TypeScript strict types
+- [ ] **Indentation sử dụng 4 spaces** (không dùng tabs)
+- [ ] Error handling với toast notifications
+- [ ] Loading states được handle
+- [ ] Responsive design
+- [ ] Accessibility considerations
+- [ ] Code được organize và clean
+- [ ] Không có linter errors
+
+## 📚 Tài liệu tham khảo
+
+- Xem `docs/ADDING_NEW_MENU_ITEMS.md` cho hướng dẫn thêm menu
+- Xem các component hiện có để học patterns:
+  - `components/stock-return/` - Stock return feature
+  - `components/stock-in/` - Stock in feature
+  - `components/sale/` - Sales/POS feature
+
+## 🔄 Khi generate code, luôn:
+
+1. **Follow existing patterns** - Xem code hiện có để match style
+2. **Use TypeScript** - Strict typing, no `any`
+3. **Use 4 spaces indentation** - Không dùng tabs, mặc định 4 spaces cho mọi indentation level
+4. **Add translations** - Cả tiếng Việt và English
+5. **Handle errors** - Try-catch với user-friendly messages
+6. **Add loading states** - Better UX
+7. **Make it responsive** - Mobile-first
+8. **Use existing UI components** - shadcn/ui components
+9. **Organize code** - Tách logic, hooks, utils
+10. **Add comments** - Khi logic phức tạp
+11. **Test edge cases** - Empty states, errors, loading
+
+---
+
+**Lưu ý**: File này được sử dụng để guide AI assistants khi generate code. Cập nhật file này khi có thay đổi conventions hoặc patterns mới.

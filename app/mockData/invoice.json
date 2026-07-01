@@ -1,0 +1,155 @@
+[
+  {
+    "Id": 4,
+    "Code": "KH000004",
+    "Name": "Tuấn",
+    "EntryDate": "2025-08-20T16:30:00+07:00",
+    "Total": 3000000,
+    "Discount": 450000,
+    "TotalPayment": 2550000
+  },
+  {
+    "Id": 5,
+    "Code": "KH000005",
+    "Name": "Mai",
+    "EntryDate": "2025-08-18T10:05:00+07:00",
+    "Total": 18000000,
+    "Discount": 2700000,
+    "TotalPayment": 15300000
+  },
+  {
+    "Id": 6,
+    "Code": "KH000006",
+    "Name": "Phúc",
+    "EntryDate": "2025-08-15T13:40:00+07:00",
+    "Total": 9000000,
+    "Discount": 1350000,
+    "TotalPayment": 7650000
+  },
+  {
+    "Id": 7,
+    "Code": "KH000007",
+    "Name": "Thảo",
+    "EntryDate": "2025-08-12T08:25:00+07:00",
+    "Total": 2000000,
+    "Discount": 300000,
+    "TotalPayment": 1700000
+  },
+  {
+    "Id": 8,
+    "Code": "KH000008",
+    "Name": "Dũng",
+    "EntryDate": "2025-08-10T17:55:00+07:00",
+    "Total": 16000000,
+    "Discount": 2400000,
+    "TotalPayment": 13600000
+  },
+  {
+    "Id": 9,
+    "Code": "KH000009",
+    "Name": "Vy",
+    "EntryDate": "2025-08-08T12:10:00+07:00",
+    "Total": 5000000,
+    "Discount": 750000,
+    "TotalPayment": 4250000
+  },
+  {
+    "Id": 10,
+    "Code": "KH000010",
+    "Name": "Nam",
+    "EntryDate": "2025-08-05T08:00",
+    "Total": 11000001,
+    "Discount": 1650000,
+    "TotalPayment": 9350001
+  },
+  {
+    "Id": 11,
+    "Code": "KH000011",
+    "Name": "Linh",
+    "EntryDate": "2025-08-03T09:45:00+07:00",
+    "Total": 6000000,
+    "Discount": 900000,
+    "TotalPayment": 5100000
+  },
+  {
+    "Id": 12,
+    "Code": "KH000012",
+    "Name": "Quân",
+    "EntryDate": "2025-07-30T18:20:00+07:00",
+    "Total": 13000000,
+    "Discount": 1950000,
+    "TotalPayment": 11050000
+  },
+  {
+    "Id": 13,
+    "Code": "KH000013",
+    "Name": "Trang",
+    "EntryDate": "2025-07-28T07:30:00+07:00",
+    "Total": 4000000,
+    "Discount": 600000,
+    "TotalPayment": 3400000
+  },
+  {
+    "Id": 14,
+    "Code": "KH000014",
+    "Name": "Hải",
+    "EntryDate": "2025-07-25T14:10:00+07:00",
+    "Total": 17000000,
+    "Discount": 2550000,
+    "TotalPayment": 14450000
+  },
+  {
+    "Id": 15,
+    "Code": "KH000015",
+    "Name": "Ngọc",
+    "EntryDate": "2025-07-22T11:00:00+07:00",
+    "Total": 1000000,
+    "Discount": 150000,
+    "TotalPayment": 850000
+  },
+  {
+    "Id": 16,
+    "Code": "KH000016",
+    "Name": "Khoa",
+    "EntryDate": "2025-07-20T16:45:00+07:00",
+    "Total": 14000000,
+    "Discount": 2100000,
+    "TotalPayment": 11900000
+  },
+  {
+    "Id": 17,
+    "Code": "KH000017",
+    "Name": "Yến",
+    "EntryDate": "2025-07-18T10:30:00+07:00",
+    "Total": 8000000,
+    "Discount": 1200000,
+    "TotalPayment": 6800000
+  },
+  {
+    "Id": 18,
+    "Code": "KH000018",
+    "Name": "Bình",
+    "EntryDate": "2025-07-15T13:15:00+07:00",
+    "Total": 19000000,
+    "Discount": 2850000,
+    "TotalPayment": 16150000
+  },
+  {
+    "Id": 19,
+    "Code": "KH000019",
+    "Name": "Diễm",
+    "EntryDate": "2025-07-12T08:50:00+07:00",
+    "Total": 10000000,
+    "Discount": 1500000,
+    "TotalPayment": 8500000
+  },
+  {
+    "Id": 20,
+    "Code": "KH000020",
+    "Name": "Long",
+    "EntryDate": "2025-07-10T17:05:00+07:00",
+    "Total": 20000000,
+    "Discount": 3000000,
+    "TotalPayment": 17000000
+  }
+]

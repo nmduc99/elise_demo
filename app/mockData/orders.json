@@ -1,0 +1,29 @@
+[
+    {
+        "Id": 1,
+        "Code": "ORD001",
+        "CustomerName": "Nguyễn Văn Aa",
+        "OrderDate": "2025-10-10T03:30",
+        "TotalAmount": 500000,
+        "Status": "Pending",
+        "PaymentMethod": "Cash"
+    },
+    {
+        "Id": 2,
+        "Code": "ORD002",
+        "CustomerName": "Trần Thị B",
+        "OrderDate": "2025-10-11T14:15:00",
+        "TotalAmount": 750000,
+        "Status": "Completed",
+        "PaymentMethod": "Credit Card"
+    },
+    {
+        "Id": 3,
+        "Code": "ORD003",
+        "CustomerName": "Lê Văn C",
+        "OrderDate": "2025-10-12T09:00:00",
+        "TotalAmount": 1200000,
+        "Status": "Shipped",
+        "PaymentMethod": "Bank Transfer"
+    }
+]

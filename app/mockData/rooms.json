@@ -1,0 +1,65 @@
+[
+  {
+    "id": "room-1",
+    "name": "Bàn 20",
+    "notes": "Gần cửa sổ",
+    "area": "Lầu 3",
+    "seats": 4,
+    "status": "active",
+    "order": 0
+  },
+  {
+    "id": "room-2",
+    "name": "Bàn 19",
+    "notes": "",
+    "area": "Lầu 3",
+    "seats": 4,
+    "status": "active",
+    "order": 1
+  },
+  {
+    "id": "room-3",
+    "name": "Bàn 18",
+    "notes": "Trong góc",
+    "area": "Lầu 3",
+    "seats": 2,
+    "status": "active",
+    "order": 2
+  },
+  {
+    "id": "room-4",
+    "name": "Bàn 40",
+    "notes": "",
+    "area": "Lầu 3",
+    "seats": 8,
+    "status": "inactive",
+    "order": 3
+  },
+  {
+    "id": "room-5",
+    "name": "Bàn 10",
+    "notes": "",
+    "area": "Lầu 2",
+    "seats": 4,
+    "status": "active",
+    "order": 4
+  },
+  {
+    "id": "room-6",
+    "name": "Bàn 9",
+    "notes": "",
+    "area": "Lầu 2",
+    "seats": 4,
+    "status": "active",
+    "order": 5
+  },
+  {
+    "id": "room-1762163826379",
+    "name": "Bàn 12",
+    "area": "Lầu 2",
+    "seats": 6,
+    "order": 1,
+    "status": "active",
+    "notes": "View biển"
+  }
+]

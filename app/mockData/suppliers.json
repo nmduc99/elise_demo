@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1a2b3c4d-0001-4e5f-9012-abcdef123456",
+    "name": "Công ty TNHH ABC",
+    "phone": "0901234567",
+    "email": "contact@abc.com",
+    "address": "123 Đường Lê Lợi, Quận 1, TP.HCM",
+    "tax_code": "0101234567"
+  },
+  {
+    "id": "1a2b3c4d-0002-4e5f-9012-abcdef123457",
+    "name": "Công ty CP XYZ",
+    "phone": "0912345678",
+    "email": "info@xyz.com",
+    "address": "456 Đường Nguyễn Huệ, Quận 1, TP.HCM",
+    "tax_code": "0202345678"
+  },
+  {
+    "id": "1a2b3c4d-0003-4e5f-9012-abcdef123458",
+    "name": "Công ty TNHH Hồng Phát",
+    "phone": "0987654321",
+    "email": "sales@hongphat.com",
+    "address": "789 Đường Trần Hưng Đạo, Quận 5, TP.HCM",
+    "tax_code": "0303456789"
+  },
+  {
+    "id": "1a2b3c4d-0004-4e5f-9012-abcdef123459",
+    "name": "Công ty CP Minh Anh",
+    "phone": "0934567890",
+    "email": "contact@minhanh.com",
+    "address": "321 Đường Phạm Ngũ Lão, Quận 1, TP.HCM",
+    "tax_code": "0404567890"
+  },
+  {
+    "id": "1a2b3c4d-0005-4e5f-9012-abcdef123460",
+    "name": "Công ty TNHH Phú Thịnh",
+    "phone": "0976543210",
+    "email": "support@phuthinh.com",
+    "address": "654 Đường Lý Thường Kiệt, Quận 10, TP.HCM",
+    "tax_code": "0505678901"
+  },
+  {
+    "id": "1a2b3c4d-0006-4e5f-9012-abcdef123461",
+    "name": "Công ty CP Thanh Bình",
+    "phone": "0923456789",
+    "email": "info@thanhbinh.com",
+    "address": "987 Đường Võ Văn Tần, Quận 3, TP.HCM",
+    "tax_code": "0606789012"
+  },
+  {
+    "id": "1a2b3c4d-0007-4e5f-9012-abcdef123462",
+    "name": "Công ty TNHH An Phát",
+    "phone": "0911223344",
+    "email": "sales@anphat.com",
+    "address": "111 Đường Hai Bà Trưng, Quận 3, TP.HCM",
+    "tax_code": "0707890123"
+  },
+  {
+    "id": "1a2b3c4d-0008-4e5f-9012-abcdef123463",
+    "name": "Công ty CP Đại Lợi",
+    "phone": "0909988776",
+    "email": "contact@dailoi.com",
+    "address": "222 Đường Nguyễn Trãi, Quận 5, TP.HCM",
+    "tax_code": "0808901234"
+  },
+  {
+    "id": "1a2b3c4d-0009-4e5f-9012-abcdef123464",
+    "name": "Công ty TNHH Hoàng Gia",
+    "phone": "0933224455",
+    "email": "info@hoanggia.com",
+    "address": "333 Đường Cách Mạng Tháng 8, Quận 3, TP.HCM",
+    "tax_code": "0909012345"
+  },
+  {
+    "id": "1a2b3c4d-0010-4e5f-9012-abcdef123465",
+    "name": "Công ty CP Long An",
+    "phone": "0944556677",
+    "email": "support@longan.com",
+    "address": "444 Đường Phan Xích Long, Quận Phú Nhuận, TP.HCM",
+    "tax_code": "1000123456"
+  },
+  {
+    "id": "1a2b3c4d-0011-4e5f-9012-abcdef123466",
+    "name": "Công ty TNHH Bách Khoa",
+    "phone": "0955667788",
+    "email": "contact@bachkhoa.com",
+    "address": "555 Đường Lê Văn Sỹ, Quận 3, TP.HCM",
+    "tax_code": "1101234567"
+  },
+  {
+    "id": "1a2b3c4d-0012-4e5f-9012-abcdef123467",
+    "name": "Công ty CP Đại Phát",
+    "phone": "0966778899",
+    "email": "sales@daiphat.com",
+    "address": "666 Đường Nguyễn Văn Cừ, Quận 1, TP.HCM",
+    "tax_code": "1202345678"
+  },
+  {
+    "id": "1a2b3c4d-0013-4e5f-9012-abcdef123468",
+    "name": "Công ty TNHH Ngọc Anh",
+    "phone": "0977889900",
+    "email": "info@ngocanh.com",
+    "address": "777 Đường Hoàng Sa, Quận 1, TP.HCM",
+    "tax_code": "1303456789"
+  },
+  {
+    "id": "1a2b3c4d-0014-4e5f-9012-abcdef123469",
+    "name": "Công ty CP Phúc Lợi",
+    "phone": "0988990011",
+    "email": "support@phucloi.com",
+    "address": "888 Đường Trường Sa, Quận 3, TP.HCM",
+    "tax_code": "1404567890"
+  },
+  {
+    "id": "1a2b3c4d-0015-4e5f-9012-abcdef123470",
+    "name": "Công ty TNHH Thành Công",
+    "phone": "0912341122",
+    "email": "contact@thanhcong.com",
+    "address": "999 Đường Pasteur, Quận 1, TP.HCM",
+    "tax_code": "1505678901"
+  },
+  {
+    "id": "1a2b3c4d-0016-4e5f-9012-abcdef123471",
+    "name": "Công ty CP Vĩnh Phát",
+    "phone": "0923452233",
+    "email": "sales@vinhphat.com",
+    "address": "101 Đường Nguyễn Đình Chiểu, Quận 3, TP.HCM",
+    "tax_code": "1606789012"
+  },
+  {
+    "id": "1a2b3c4d-0017-4e5f-9012-abcdef123472",
+    "name": "Công ty TNHH Kim Long",
+    "phone": "0934563344",
+    "email": "info@kimlong.com",
+    "address": "202 Đường Võ Thị Sáu, Quận 1, TP.HCM",
+    "tax_code": "1707890123"
+  },
+  {
+    "id": "1a2b3c4d-0018-4e5f-9012-abcdef123473",
+    "name": "Công ty CP Thắng Lợi",
+    "phone": "0945674455",
+    "email": "support@thangloi.com",
+    "address": "303 Đường Nguyễn Hữu Cảnh, Quận Bình Thạnh, TP.HCM",
+    "tax_code": "1808901234"
+  },
+  {
+    "id": "1a2b3c4d-0019-4e5f-9012-abcdef123474",
+    "name": "Công ty TNHH Hưng Phát",
+    "phone": "0956785566",
+    "email": "contact@hungphat.com",
+    "address": "404 Đường Lê Hồng Phong, Quận 5, TP.HCM",
+    "tax_code": "1909012345"
+  },
+  {
+    "id": "1a2b3c4d-0020-4e5f-9012-abcdef123475",
+    "name": "Công ty CP Hoàng Minh",
+    "phone": "0967896677",
+    "email": "sales@hoangminh.com",
+    "address": "505 Đường Nguyễn Trãi, Quận 1, TP.HCM",
+    "tax_code": "2000123456"
+  }
+]

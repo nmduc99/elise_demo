@@ -1,0 +1,110 @@
+[
+  {
+    "id": "income_sales",
+    "name": "Tiền hàng",
+    "type": "in",
+    "description": ""
+  },
+  {
+    "id": "income_other",
+    "name": "Thu nhập khác",
+    "type": "in",
+    "description": ""
+  },
+  {
+    "id": "expense_other",
+    "name": "Chi phí khác",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_transfer_withdraw",
+    "name": "Chuyển/Rút",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_salary",
+    "name": "Chi trả lương NV",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_electricity",
+    "name": "Chi phí điện",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_event",
+    "name": "Chi phí sự kiện - hội nghị",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_travel",
+    "name": "Công tác phí",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_water",
+    "name": "Chi phí nước",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_labor",
+    "name": "Chi phí nhân công",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_software",
+    "name": "Phần mềm - dịch vụ - quản trị - tư vấn",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_advertising",
+    "name": "Chi phí quảng cáo",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_maintenance",
+    "name": "Chi phí sửa chữa bảo dưỡng",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_rent",
+    "name": "Thuê kho bãi mặt bằng kinh doanh",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_stationery",
+    "name": "Chi phí văn phòng phẩm công cụ dụng cụ",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_telecom",
+    "name": "Chi phí viễn thông",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "expense_tax",
+    "name": "Nộp thuế",
+    "type": "out",
+    "description": ""
+  },
+  {
+    "id": "ti_n_n_c_1762321654555",
+    "name": "Tiền nước",
+    "description": "",
+    "type": "in"
+  }
+]

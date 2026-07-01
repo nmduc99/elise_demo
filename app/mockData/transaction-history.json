@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1757389521375,
+    "productId": 1757389520872,
+    "productName": "bánh mì trứng",
+    "type": "import",
+    "quantity": 10,
+    "date": "2025-09-09T03:45:21.375Z"
+  },
+  {
+    "id": 1757488598424,
+    "productId": 2,
+    "productName": "Nước cam",
+    "type": "export",
+    "quantity": 11,
+    "date": "2025-09-10T07:16:38.424Z"
+  },
+  {
+    "id": 1757493389987,
+    "productId": 2,
+    "productName": "Nước cam",
+    "type": "export",
+    "quantity": 11,
+    "date": "2025-09-10T08:36:29.987Z"
+  },
+  {
+    "id": 1757493429727,
+    "productId": 5,
+    "productName": "Cafe sữa",
+    "type": "export",
+    "quantity": 15,
+    "date": "2025-09-10T08:37:09.727Z"
+  },
+  {
+    "id": 1757640563285,
+    "productId": 1,
+    "productName": "Bánh mì thịt",
+    "type": "export",
+    "quantity": 45,
+    "date": "2025-09-12T01:29:23.285Z"
+  },
+  {
+    "id": 1759650464867,
+    "productId": 1759650463986,
+    "productName": "",
+    "type": "import",
+    "quantity": 0,
+    "date": "2025-10-05T07:47:44.867Z"
+  },
+  {
+    "id": 1759808472000,
+    "productName": "",
+    "type": "import",
+    "quantity": 0,
+    "date": "2025-10-07T03:41:12.000Z"
+  },
+  {
+    "id": 1759820556450,
+    "productName": "",
+    "type": "import",
+    "quantity": 0,
+    "date": "2025-10-07T07:02:36.450Z"
+  },
+  {
+    "id": 1759820945390,
+    "productName": "",
+    "type": "import",
+    "quantity": 0,
+    "date": "2025-10-07T07:09:05.390Z"
+  }
+]

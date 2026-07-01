@@ -1,0 +1,37 @@
+services:
+  bmg-inventory-management-fe:
+    container_name: inventory_fe
+    image: ghcr.io/bmgqn2025/bmg_inventory_management_fe:latest
+    restart: always
+    ports:
+      - "3002:3002"              # host:container
+    environment:
+      - NODE_ENV=develop
+      - PORT=3002                # phải khớp Dockerfile
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3002 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - inventory_net
+      - gateway-net
+
+networks:
+  inventory_net:
+    external: true
+  gateway-net:
+    external: true

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "Đồ uống",
+    "description": "Nước giải khát và đồ uống"
+  },
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa9",
+    "name": "Đồ ăn",
+    "description": "Thức ăn và đồ ăn nhẹ"
+  },
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa8",
+    "name": "Khác",
+    "description": "Đồ dùng khác"
+  },
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+    "name": "abc",
+    "description": "abc"
+  }
+]

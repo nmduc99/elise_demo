@@ -1,0 +1,192 @@
+[
+  {
+    "id": "1d9c62f1-8c6d-4cf4-90f2-6c1b2f8b5a0f",
+    "name": "John Smith",
+    "phone": "84912345678",
+    "email": "john.smith@example.com",
+    "address": "123 Main St, New York, USA",
+    "tax_code": "1234567890",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "2a3b8d4f-5c7e-4df0-8a2c-8a34d2e7b6d1",
+    "name": "Emma Johnson",
+    "phone": "84987654321",
+    "email": "emma.johnson@example.com",
+    "address": "456 Oak Ave, Los Angeles, USA",
+    "tax_code": "9876543210",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "3f6e1a9b-4d2f-41c8-b7e2-3b6e8f9a7c5d",
+    "name": "Michael Brown",
+    "phone": "84123456789",
+    "email": "michael.brown@example.com",
+    "address": "789 Pine Rd, Chicago, USA",
+    "tax_code": "4567891230",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "4c9d2e7a-6f5b-4b2e-8a3d-9c5e7b6a1d2f",
+    "name": "Olivia Davis",
+    "phone": "84911223344",
+    "email": "olivia.davis@example.com",
+    "address": "321 Cedar St, Houston, USA",
+    "tax_code": "1122334455",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "5e7a1d2f-9c5b-4b6e-8a3d-2e7b6a1d4f9c",
+    "name": "William Wilson",
+    "phone": "84955667788",
+    "email": "william.wilson@example.com",
+    "address": "654 Birch Blvd, Phoenix, USA",
+    "tax_code": "6677889900",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "6f1a2d3e-7b8c-4d9f-8e1a-2d3e7b6c5f9a",
+    "name": "Sophia Martinez",
+    "phone": "84887766554",
+    "email": "sophia.martinez@example.com",
+    "address": "987 Maple Ln, Philadelphia, USA",
+    "tax_code": "2233445566",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "7b6c5f9a-2d3e-4f8e-8a1b-6c5f9a2d3e7b",
+    "name": "James Anderson",
+    "phone": "84999887766",
+    "email": "james.anderson@example.com",
+    "address": "159 Spruce Ct, San Antonio, USA",
+    "tax_code": "3344556677",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "8a2d3e7b-6c5f-4f9a-8d2e-3e7b6c5f9a1d",
+    "name": "Isabella Taylor",
+    "phone": "84111222333",
+    "email": "isabella.taylor@example.com",
+    "address": "753 Willow Way, Dallas, USA",
+    "tax_code": "4455667788",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "9c5f9a2d-3e7b-4b6c-8f9a-2d3e7b6c5f1a",
+    "name": "Benjamin Thomas",
+    "phone": "84933445566",
+    "email": "benjamin.thomas@example.com",
+    "address": "852 Aspen Dr, San Diego, USA",
+    "tax_code": "5566778899",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "10d2e7b6-c5f9-4a2d-8e3b-7b6c5f9a1d3e",
+    "name": "Mia Moore",
+    "phone": "84944556677",
+    "email": "mia.moore@example.com",
+    "address": "951 Redwood Pl, San Jose, USA",
+    "tax_code": "6677889901",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "12c5f9a2-d3e7-4b6c-8f9a-2d3e7b6c5f1b",
+    "name": "Charlotte Harris",
+    "phone": "84955664422",
+    "email": "charlotte.harris@example.com",
+    "address": "258 Elm Cir, Jacksonville, USA",
+    "tax_code": "8899001122",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "13b6c5f9-a2d3-4e7b-8c5f-9a2d3e7b6c1f",
+    "name": "Daniel Clark",
+    "phone": "84966778899",
+    "email": "daniel.clark@example.com",
+    "address": "369 Beech Ln, Fort Worth, USA",
+    "tax_code": "9900112233",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "14e7b6c5-f9a2-4d3e-8b6c-5f9a2d3e7c1a",
+    "name": "Amelia Lewisa",
+    "phone": "84123456780",
+    "email": "amelia.lewis@example.com",
+    "address": "741 Dogwood Dr, Columbus, USA",
+    "tax_code": "1011121314",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T01:47:37.819Z"
+  },
+  {
+    "id": "15f9a2d3-e7b6-4c5f-8a2d-3e7b6c5f9a4d",
+    "name": "Henry Robinson",
+    "phone": "84911223355",
+    "email": "henry.robinson@example.com",
+    "address": "852 Magnolia Ct, Charlotte, USA",
+    "tax_code": "1213141516",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "16c5f9a2-d3e7-4b6c-8f9a-2d3e7b6c5f2b",
+    "name": "Evelyn Walker",
+    "phone": "84922334455",
+    "email": "evelyn.walker@example.com",
+    "address": "963 Hickory St, Indianapolis, USA",
+    "tax_code": "1415161718",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "17b6c5f9-a2d3-4e7b-8c5f-9a2d3e7b6c2f",
+    "name": "Lucas Perez",
+    "phone": "84933445577",
+    "email": "lucas.perez@example.com",
+    "address": "159 Fir Ave, San Francisco, USA",
+    "tax_code": "1617181920",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "18e7b6c5-f9a2-4d3e-8b6c-5f9a2d3e7c2a",
+    "name": "Harper Hall",
+    "phone": "84944556688",
+    "email": "harper.hall@example.com",
+    "address": "357 Palm Rd, Seattle, USA",
+    "tax_code": "1819202122",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "19f9a2d3-e7b6-4c5f-8a2d-3e7b6c5f9a5d",
+    "name": "Ethan Allen",
+    "phone": "84955667799",
+    "email": "ethan.allen@example.com",
+    "address": "753 Cypress Ln, Denver, USA",
+    "tax_code": "2021222324",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  },
+  {
+    "id": "20c5f9a2-d3e7-4b6c-8f9a-2d3e7b6c5f3b",
+    "name": "Ava Young",
+    "phone": "84966778800",
+    "email": "ava.young@example.com",
+    "address": "951 Walnut St, Boston, USA",
+    "tax_code": "2122232425",
+    "created_at": "2025-09-11T07:30:00",
+    "updated_at": "2025-09-11T07:30:00"
+  }
+]
