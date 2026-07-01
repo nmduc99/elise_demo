@@ -32,6 +32,14 @@ export default function RoleGuard({ permission, children }: RoleGuardProps) {
         );
     }
 
+    if (!user) {
+        return (
+            <div className="flex h-64 items-center justify-center text-slate-400">
+                Đang tải...
+            </div>
+        );
+    }
+
     if (!isAllowed(role, permission)) {
         return (
             <div className="mx-auto mt-16 max-w-md rounded-xl border bg-white p-8 text-center shadow-sm">

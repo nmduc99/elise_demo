@@ -13,7 +13,7 @@ import clsx from "clsx";
 export default function UserMenu() {
     const t = useTranslations("common");
     const locale = useLocale();
-    const { user, setUser } = useAuth();
+    const { user } = useAuth();
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
     const [userMenuTimeoutId, setUserMenuTimeoutId] = useState<NodeJS.Timeout | null>(null);
@@ -34,9 +34,10 @@ export default function UserMenu() {
         }
 
         clearAuthStorage();
-        setUser(null);
 
-        const loginPath = locale === "vi" ? "/dang-nhap" : "/login";
+        const loginPath = locale === "vi" ? `/${locale}/dang-nhap` : `/${locale}/login`;
+        // Redirect immediately — avoid setUser(null) here, which would re-render
+        // RoleGuard on the current page and flash "Không có quyền truy cập".
         window.location.replace(loginPath);
     };
 
