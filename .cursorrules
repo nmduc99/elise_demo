@@ -26,6 +26,12 @@
 - **Pages**: `page.tsx` (Next.js convention)
 - **Routes**: kebab-case cho slugs (ví dụ: `/stock-return`)
 
+### Giới hạn kích thước file:
+
+- **Mỗi file `.ts` / `.tsx` không quá 500 dòng** (không tính file dịch `languages/*.json`)
+- `page.tsx` chỉ giữ routing, layout shell và compose component — tách logic sang `use*Page.ts`, UI sang `components/<feature>/`
+- Khi file vượt ngưỡng: tách tab/section thành component riêng, hook cho state & handlers, utils cho pure functions
+
 ## ⚛️ React Component Patterns
 
 ### 1. Component Structure
