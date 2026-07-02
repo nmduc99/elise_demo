@@ -21,6 +21,8 @@ export default function WarehousePageContent({ state }: WarehousePageContentProp
         transfers,
         movements,
         defaultTab,
+        activeTab,
+        setActiveTab,
     } = state;
 
     const { stockOutDialog, returnSupplierDialog, transferDialog } = useWarehouseActionDialogs(state);
@@ -45,7 +47,7 @@ export default function WarehousePageContent({ state }: WarehousePageContentProp
 
             <AccessBanner access={storeAccess.isReadOnly ? storeAccess : regionalAccess} />
 
-            <Tabs defaultValue={defaultTab}>
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "regional" | "store")}>
                 <TabsList>
                     {regionalAccess.canAccess && !lockedStoreId && (
                         <TabsTrigger value="regional">Kho khu vực</TabsTrigger>
@@ -56,7 +58,7 @@ export default function WarehousePageContent({ state }: WarehousePageContentProp
                 </TabsList>
 
                 <RegionalWarehouseTab state={state} />
-                <StoreWarehouseTab state={state} transferDialog={transferDialog} />
+                <StoreWarehouseTab state={state} transferDialog={transferDialog} returnSupplierDialog={returnSupplierDialog} />
             </Tabs>
 
             <WarehouseHistory transfers={transfers} movements={movements} />

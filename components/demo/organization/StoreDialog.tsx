@@ -55,7 +55,7 @@ export default function StoreDialog({ open, onOpenChange, draft, setDraft, onSav
                     <div className="col-span-2"><label className={labelClass}>Địa chỉ</label><input className={inputClass} value={draft.address} onChange={(e) => setDraft({ ...draft, address: e.target.value })} /></div>
                     <div><label className={labelClass}>Quản lý</label><input className={inputClass} value={draft.managerName} onChange={(e) => setDraft({ ...draft, managerName: e.target.value })} /></div>
                     <div><label className={labelClass}>Điện thoại</label><input className={inputClass} value={draft.phone} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} /></div>
-                    <div><label className={labelClass}>Mục tiêu/tháng (đ)</label><input type="number" className={inputClass} value={draft.monthlyTarget} onChange={(e) => setDraft({ ...draft, monthlyTarget: Number(e.target.value) })} /></div>
+                    <div><label className={labelClass}>Mục tiêu/tháng (vnđ)</label><input type="number" className={inputClass} value={draft.monthlyTarget} onChange={(e) => setDraft({ ...draft, monthlyTarget: Number(e.target.value) })} /></div>
                     <div><label className={labelClass}>Royalty (%)</label><input type="number" className={inputClass} value={draft.royaltyRate} onChange={(e) => setDraft({ ...draft, royaltyRate: Number(e.target.value) })} /></div>
                     <div>
                         <label className={labelClass}>Trạng thái</label>

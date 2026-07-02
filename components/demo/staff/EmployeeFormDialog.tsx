@@ -83,7 +83,7 @@ export default function EmployeeFormDialog({
                             </SelectContent>
                         </Select>
                     </div>
-                    <div><label className={labelClass}>Lương (đ)</label><input type="number" className={inputClass} value={draft.salary} onChange={(e) => setDraft({ ...draft, salary: Number(e.target.value) })} /></div>
+                    <div><label className={labelClass}>Lương (vnđ)</label><input type="number" className={inputClass} value={draft.salary} onChange={(e) => setDraft({ ...draft, salary: Number(e.target.value) })} /></div>
                     <div><label className={labelClass}>Ngày vào làm</label><input type="date" className={inputClass} value={draft.joinedAt.slice(0, 10)} onChange={(e) => setDraft({ ...draft, joinedAt: e.target.value })} /></div>
                     <div className="col-span-2">
                         <label className={labelClass}>Trạng thái</label>

@@ -306,7 +306,7 @@ export default function CartPanel({
                                         : "bg-white text-slate-600 hover:bg-slate-50",
                                 )}
                             >
-                                VND
+                                vnđ
                             </button>
                             <button
                                 type="button"

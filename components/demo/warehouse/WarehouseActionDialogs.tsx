@@ -44,12 +44,16 @@ export function useWarehouseActionDialogs(state: WarehousePageState) {
     outOpen,
     setOutOpen,
     returnOpen,
-    setReturnOpen,
+    handleReturnOpenChange,
     moveForm,
     setMoveForm,
-    moveAvailable,
+    regionalMoveAvailable,
+    returnMoveAvailable,
     submitStockOut,
     submitReturnSupplier,
+    activeTab,
+    storeId,
+    handleStoreIdChange,
   } = state;
 
   const stockOutDialog = stockOutAccess.canWrite ? (
@@ -66,7 +70,7 @@ export function useWarehouseActionDialogs(state: WarehousePageState) {
         <StockMoveFields
           form={moveForm}
           setForm={setMoveForm}
-          available={moveAvailable}
+          available={regionalMoveAvailable}
         />
         <DialogFooter>
           <Button variant="outline" onClick={() => setOutOpen(false)}>
@@ -84,7 +88,7 @@ export function useWarehouseActionDialogs(state: WarehousePageState) {
   ) : null;
 
   const returnSupplierDialog = stockOutAccess.canWrite ? (
-    <Dialog open={returnOpen} onOpenChange={setReturnOpen}>
+    <Dialog open={returnOpen} onOpenChange={handleReturnOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
           <RotateCcw size={16} className="mr-1.5" /> Trả hàng
@@ -97,12 +101,17 @@ export function useWarehouseActionDialogs(state: WarehousePageState) {
         <StockMoveFields
           form={moveForm}
           setForm={setMoveForm}
-          available={moveAvailable}
+          available={returnMoveAvailable}
           showSupplier
           suppliers={SUPPLIERS}
+          returnMode={activeTab === "store" ? "store" : "regional"}
+          storeId={storeId}
+          storeOptions={storeOptions}
+          lockedStoreId={lockedStoreId}
+          onStoreIdChange={handleStoreIdChange}
         />
         <DialogFooter>
-          <Button variant="outline" onClick={() => setReturnOpen(false)}>
+          <Button variant="outline" onClick={() => handleReturnOpenChange(false)}>
             Hủy
           </Button>
           <Button

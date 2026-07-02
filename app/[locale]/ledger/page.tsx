@@ -162,7 +162,7 @@ export default function LedgerPage() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
                                             <div>
-                                                <label className={labelClass}>Số tiền (đ)</label>
+                                                <label className={labelClass}>Số tiền (vnđ)</label>
                                                 <input type="number" min={0} className={inputClass} value={draft.amount} onChange={(e) => setDraft((d) => ({ ...d, amount: Number(e.target.value) }))} />
                                             </div>
                                             <div>

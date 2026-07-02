@@ -3,30 +3,28 @@
  * Kept dependency-free so they can run on both server and client.
  */
 
+export const VND_SUFFIX = "vnđ";
+
 export function formatVnd(value: number): string {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-        maximumFractionDigits: 0,
-    }).format(Math.round(value || 0));
+    return `${formatNumber(value)} ${VND_SUFFIX}`;
 }
 
 /**
- * Compact currency for KPI cards, e.g. 1.2 tỷ / 850 tr.
+ * Compact currency for KPI cards, e.g. 1.2 tỷ vnđ / 850 tr vnđ.
  */
 export function formatVndShort(value: number): string {
     const v = Math.round(value || 0);
     const abs = Math.abs(v);
     if (abs >= 1_000_000_000) {
-        return `${(v / 1_000_000_000).toFixed(1)} tỷ`;
+        return `${(v / 1_000_000_000).toFixed(1)} tỷ ${VND_SUFFIX}`;
     }
     if (abs >= 1_000_000) {
-        return `${Math.round(v / 1_000_000)} tr`;
+        return `${Math.round(v / 1_000_000)} tr ${VND_SUFFIX}`;
     }
     if (abs >= 1_000) {
-        return `${Math.round(v / 1_000)}k`;
+        return `${Math.round(v / 1_000)}k ${VND_SUFFIX}`;
     }
-    return String(v);
+    return formatVnd(v);
 }
 
 export function formatNumber(value: number): string {

@@ -99,8 +99,8 @@ export default function CatalogPage() {
 
     const saveProduct = () => {
         if (!draft) return;
-        if (!draft.name.trim() || !draft.sku.trim()) {
-            toast({ title: "Thiếu tên hoặc SKU", variant: "destructive" });
+        if (!draft.name.trim()) {
+            toast({ title: "Thiếu tên sản phẩm", variant: "destructive" });
             return;
         }
         const parsed = {

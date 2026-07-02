@@ -20,6 +20,12 @@ interface StockMoveFieldsProps {
     available: number;
     showSupplier?: boolean;
     suppliers?: { id: string; name: string }[];
+    /** Khi trả hàng NCC: thứ tự & nhãn field theo tab kho khu vực / kho cửa hàng */
+    returnMode?: "regional" | "store";
+    storeId?: string;
+    storeOptions?: { id: string; name: string }[];
+    lockedStoreId?: string | null;
+    onStoreIdChange?: (storeId: string) => void;
 }
 
 export default function StockMoveFields({
@@ -28,57 +34,105 @@ export default function StockMoveFields({
     available,
     showSupplier = false,
     suppliers = [],
+    returnMode,
+    storeId,
+    storeOptions = [],
+    lockedStoreId,
+    onStoreIdChange,
 }: StockMoveFieldsProps) {
     const moveProduct = getProduct(form.productId)!;
+    const isStoreReturn = showSupplier && returnMode === "store";
+    const isRegionalReturn = showSupplier && returnMode === "regional";
+
+    const supplierField = showSupplier ? (
+        <div>
+            <label className="mb-1 block text-xs font-medium text-slate-500">
+                Nhà cung cấp
+            </label>
+            <Select
+                value={form.supplierId}
+                onValueChange={(value) =>
+                    setForm((current) => ({ ...current, supplierId: value }))
+                }
+            >
+                <SelectTrigger>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    {suppliers.map((supplier) => (
+                        <SelectItem key={supplier.id} value={supplier.id}>
+                            {supplier.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    ) : null;
+
+    const regionalWarehouseField = (
+        <div>
+            <label className="mb-1 block text-xs font-medium text-slate-500">
+                {isStoreReturn ? "Trả về kho khu vực" : "Kho khu vực"}
+            </label>
+            <Select
+                value={form.regionId}
+                onValueChange={(value) =>
+                    setForm((current) => ({ ...current, regionId: value }))
+                }
+            >
+                <SelectTrigger>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    {REGIONAL_WAREHOUSES.map((warehouse) => (
+                        <SelectItem key={warehouse.id} value={warehouse.regionId}>
+                            {warehouse.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+
+    const storeField = isStoreReturn && storeId ? (
+        <div>
+            <label className="mb-1 block text-xs font-medium text-slate-500">
+                Cửa hàng
+            </label>
+            <Select
+                value={storeId}
+                onValueChange={(value) => onStoreIdChange?.(value)}
+                disabled={!!lockedStoreId}
+            >
+                <SelectTrigger>
+                    <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    {storeOptions.map((store) => (
+                        <SelectItem key={store.id} value={store.id}>
+                            {store.name}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    ) : null;
 
     return (
         <div className="space-y-3">
-            {showSupplier && (
-                <div>
-                    <label className="mb-1 block text-xs font-medium text-slate-500">
-                        Nhà cung cấp
-                    </label>
-                    <Select
-                        value={form.supplierId}
-                        onValueChange={(value) =>
-                            setForm((current) => ({ ...current, supplierId: value }))
-                        }
-                    >
-                        <SelectTrigger>
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {suppliers.map((supplier) => (
-                                <SelectItem key={supplier.id} value={supplier.id}>
-                                    {supplier.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-            )}
+            {isStoreReturn && storeField}
+            {isStoreReturn && regionalWarehouseField}
+            {isStoreReturn && supplierField}
+            {isRegionalReturn && regionalWarehouseField}
+            {isRegionalReturn && supplierField}
+            {showSupplier && !returnMode && supplierField}
 
             <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2">
-                    <label className="mb-1 block text-xs font-medium text-slate-500">Kho khu vực</label>
-                    <Select
-                        value={form.regionId}
-                        onValueChange={(value) =>
-                            setForm((current) => ({ ...current, regionId: value }))
-                        }
-                    >
-                        <SelectTrigger>
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {REGIONAL_WAREHOUSES.map((warehouse) => (
-                                <SelectItem key={warehouse.id} value={warehouse.regionId}>
-                                    {warehouse.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+                {!showSupplier && (
+                    <div className="col-span-2">
+                        {regionalWarehouseField}
+                    </div>
+                )}
                 <div className="col-span-2">
                     <label className="mb-1 block text-xs font-medium text-slate-500">Sản phẩm</label>
                     <Select

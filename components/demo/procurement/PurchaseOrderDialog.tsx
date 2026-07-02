@@ -65,7 +65,7 @@ export default function PurchaseOrderDialog({ open, onOpenChange, draft, setDraf
                             <input type="number" min={1} className={inputClass} value={draft.units} onChange={(e) => setDraft({ ...draft, units: Number(e.target.value) })} />
                         </div>
                         <div>
-                            <label className={labelClass}>Đơn giá (đ)</label>
+                            <label className={labelClass}>Đơn giá (vnđ)</label>
                             <input type="number" min={0} className={inputClass} value={draft.unitCost} onChange={(e) => setDraft({ ...draft, unitCost: Number(e.target.value) })} />
                         </div>
                     </div>

@@ -19,9 +19,10 @@ import type { ReactNode } from "react";
 interface StoreWarehouseTabProps {
     state: WarehousePageState;
     transferDialog: ReactNode;
+    returnSupplierDialog?: ReactNode;
 }
 
-export default function StoreWarehouseTab({ state, transferDialog }: StoreWarehouseTabProps) {
+export default function StoreWarehouseTab({ state, transferDialog, returnSupplierDialog }: StoreWarehouseTabProps) {
     const {
         storeAccess,
         lockedStoreId,
@@ -52,7 +53,12 @@ export default function StoreWarehouseTab({ state, transferDialog }: StoreWareho
                         ))}
                     </SelectContent>
                 </Select>
-                {lockedStoreId && transferDialog}
+                {lockedStoreId && (
+                    <>
+                        {returnSupplierDialog}
+                        {transferDialog}
+                    </>
+                )}
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <StatCard

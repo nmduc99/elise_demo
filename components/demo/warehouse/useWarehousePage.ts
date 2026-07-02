@@ -97,6 +97,31 @@ export function useWarehousePage() {
     const [outOpen, setOutOpen] = useState(false);
     const [returnOpen, setReturnOpen] = useState(false);
     const [moveForm, setMoveForm] = useState<StockMoveForm>(DEFAULT_MOVE_FORM);
+    const defaultTab = regionalAccess.canAccess && !lockedStoreId ? "regional" : "store";
+    const [activeTab, setActiveTab] = useState<"regional" | "store">(
+        defaultTab as "regional" | "store",
+    );
+
+    const syncMoveFormForReturn = () => {
+        if (activeTab === "store") {
+            const store = getStore(storeId);
+            if (store) {
+                setMoveForm((current) => ({ ...current, regionId: store.regionId }));
+            }
+            return;
+        }
+        const warehouse = REGIONAL_WAREHOUSES.find((item) => item.id === regionWhId);
+        if (warehouse) {
+            setMoveForm((current) => ({ ...current, regionId: warehouse.regionId }));
+        }
+    };
+
+    const handleReturnOpenChange = (open: boolean) => {
+        if (open) {
+            syncMoveFormForReturn();
+        }
+        setReturnOpen(open);
+    };
 
     const transferProduct = getProduct(transferForm.productId)!;
     const sourceWhId =
@@ -109,14 +134,22 @@ export function useWarehousePage() {
     );
 
     const moveProduct = getProduct(moveForm.productId)!;
-    const moveWhId =
+    const regionalMoveWhId =
         regionalWarehouseForRegion(moveForm.regionId)?.id ?? REGIONAL_WAREHOUSES[0].id;
-    const moveAvailable = getEffectiveQty(
-        moveWhId,
+    const storeMoveWhId = `wh-${storeId}`;
+    const regionalMoveAvailable = getEffectiveQty(
+        regionalMoveWhId,
         moveForm.productId,
         moveForm.size,
         moveForm.color,
     );
+    const storeMoveAvailable = getEffectiveQty(
+        storeMoveWhId,
+        moveForm.productId,
+        moveForm.size,
+        moveForm.color,
+    );
+    const returnMoveAvailable = activeTab === "store" ? storeMoveAvailable : regionalMoveAvailable;
 
     const submitTransfer = () => {
         if (transferForm.qty <= 0) {
@@ -159,7 +192,7 @@ export function useWarehousePage() {
     };
 
     const submitStockOut = () => {
-        if (moveForm.qty <= 0 || moveForm.qty > moveAvailable) {
+        if (moveForm.qty <= 0 || moveForm.qty > regionalMoveAvailable) {
             toast({ title: "Số lượng không hợp lệ", variant: "destructive" });
             return;
         }
@@ -167,7 +200,7 @@ export function useWarehousePage() {
             id: `mv-out-${Date.now()}`,
             createdAt: new Date().toISOString(),
             type: "out",
-            warehouseId: moveWhId,
+            warehouseId: regionalMoveWhId,
             productId: moveForm.productId,
             size: moveForm.size,
             color: moveForm.color,
@@ -183,7 +216,10 @@ export function useWarehousePage() {
     };
 
     const submitReturnSupplier = () => {
-        if (moveForm.qty <= 0 || moveForm.qty > moveAvailable) {
+        const returnWhId = activeTab === "store" ? storeMoveWhId : regionalMoveWhId;
+        const available = activeTab === "store" ? storeMoveAvailable : regionalMoveAvailable;
+
+        if (moveForm.qty <= 0 || moveForm.qty > available) {
             toast({ title: "Số lượng không hợp lệ", variant: "destructive" });
             return;
         }
@@ -192,21 +228,30 @@ export function useWarehousePage() {
             return;
         }
         const supplier = SUPPLIERS.find((item) => item.id === moveForm.supplierId);
+        const store = activeTab === "store" ? getStore(storeId) : undefined;
+        const regionalWarehouse = regionalWarehouseForRegion(moveForm.regionId);
         addMovement({
             id: `mv-ret-${Date.now()}`,
             createdAt: new Date().toISOString(),
             type: "return_supplier",
-            warehouseId: moveWhId,
+            warehouseId: returnWhId,
             supplierId: moveForm.supplierId,
             productId: moveForm.productId,
             size: moveForm.size,
             color: moveForm.color,
             qty: moveForm.qty,
-            reason: moveForm.reason || `Trả hàng NCC: ${supplier?.name}`,
+            reason:
+                moveForm.reason ||
+                (activeTab === "store"
+                    ? `Trả hàng NCC từ ${store?.name} → ${regionalWarehouse?.name}: ${supplier?.name}`
+                    : `Trả hàng NCC: ${supplier?.name}`),
         });
         toast({
             title: "Đã trả hàng cho NCC",
-            description: `${moveForm.qty} x ${moveProduct.name} → ${supplier?.name}`,
+            description:
+                activeTab === "store"
+                    ? `${moveForm.qty} x ${moveProduct.name} từ ${store?.name} → ${supplier?.name}`
+                    : `${moveForm.qty} x ${moveProduct.name} → ${supplier?.name}`,
             variant: "success",
         });
         setReturnOpen(false);
@@ -214,7 +259,14 @@ export function useWarehousePage() {
 
     const transferLabel = transferAccess.isProposeOnly ? "Đề nghị điều chuyển" : "Điều chuyển kho";
     const canTransfer = transferAccess.canWrite || transferAccess.isProposeOnly;
-    const defaultTab = regionalAccess.canAccess && !lockedStoreId ? "regional" : "store";
+
+    const handleStoreIdChange = (nextStoreId: string) => {
+        setStoreId(nextStoreId);
+        const store = getStore(nextStoreId);
+        if (store) {
+            setMoveForm((current) => ({ ...current, regionId: store.regionId }));
+        }
+    };
 
     return {
         lockedStoreId,
@@ -249,12 +301,17 @@ export function useWarehousePage() {
         setOutOpen,
         returnOpen,
         setReturnOpen,
+        handleReturnOpenChange,
         moveForm,
         setMoveForm,
-        moveAvailable,
+        regionalMoveAvailable,
+        returnMoveAvailable,
         submitStockOut,
         submitReturnSupplier,
         defaultTab,
+        activeTab,
+        setActiveTab,
+        handleStoreIdChange,
     };
 }
 

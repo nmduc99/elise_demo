@@ -17,7 +17,9 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type Brand, type Category } from "@/lib/demo/eliseData";
+import { formatVnd } from "@/lib/demo/format";
 import { inputClass, labelClass } from "@/lib/demo/formClasses";
+import PositiveNumberInput from "./PositiveNumberInput";
 
 export interface ProductDraft {
     id: string;
@@ -76,7 +78,7 @@ export default function ProductFormDialog({
                                 <input className={inputClass} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
                             </div>
                             <div>
-                                <label className={labelClass}>Mã SKU *</label>
+                                <label className={labelClass}>Mã SKU</label>
                                 <input className={inputClass} value={draft.sku} onChange={(e) => setDraft({ ...draft, sku: e.target.value })} />
                             </div>
                             <div>
@@ -134,23 +136,37 @@ export default function ProductFormDialog({
 
                         <TabsContent value="pricing" className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className={labelClass}>Giá vốn (đ)</label>
-                                <input type="number" min={0} className={inputClass} value={draft.costPrice} onChange={(e) => setDraft({ ...draft, costPrice: Number(e.target.value) })} />
+                                <label className={labelClass}>Giá vốn (vnđ)</label>
+                                <PositiveNumberInput
+                                    value={draft.costPrice}
+                                    onChange={(costPrice) => setDraft({ ...draft, costPrice })}
+                                    format="vi-vn"
+                                />
                             </div>
                             <div>
-                                <label className={labelClass}>Giá bán (đ)</label>
-                                <input type="number" min={0} className={inputClass} value={draft.salePrice} onChange={(e) => setDraft({ ...draft, salePrice: Number(e.target.value) })} />
+                                <label className={labelClass}>Giá bán (vnđ)</label>
+                                <PositiveNumberInput
+                                    value={draft.salePrice}
+                                    onChange={(salePrice) => setDraft({ ...draft, salePrice })}
+                                    format="vi-vn"
+                                />
                             </div>
                             <div>
                                 <label className={labelClass}>VAT (%)</label>
-                                <input type="number" min={0} max={100} className={inputClass} value={draft.vatPercent} onChange={(e) => setDraft({ ...draft, vatPercent: Number(e.target.value) })} />
+                                <PositiveNumberInput
+                                    value={draft.vatPercent}
+                                    onChange={(vatPercent) => setDraft({ ...draft, vatPercent })}
+                                />
                             </div>
                             <div>
                                 <label className={labelClass}>Khối lượng (gram)</label>
-                                <input type="number" min={0} className={inputClass} value={draft.weightGram} onChange={(e) => setDraft({ ...draft, weightGram: Number(e.target.value) })} />
+                                <PositiveNumberInput
+                                    value={draft.weightGram}
+                                    onChange={(weightGram) => setDraft({ ...draft, weightGram })}
+                                />
                             </div>
                             <div className="col-span-2 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
-                                Giá sau VAT: <span className="font-semibold text-custom">{Math.round(draft.salePrice * (1 + draft.vatPercent / 100)).toLocaleString("vi-VN")} đ</span>
+                                Giá sau VAT: <span className="font-semibold text-custom">{formatVnd(Math.round(draft.salePrice * (1 + draft.vatPercent / 100)))}</span>
                             </div>
                         </TabsContent>
 
