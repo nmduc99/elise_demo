@@ -2,6 +2,7 @@
  * HR master data (departments, positions) and the generated employee roster.
  */
 
+import type { DemoRole } from "../roles";
 import { randInt, rngFor } from "./rng";
 import { STORES } from "./stores";
 
@@ -18,6 +19,8 @@ export interface Employee {
     salary: number;
     joinedAt: string;
     status: EmployeeStatus;
+    /** RBAC roles assigned by director for system access. */
+    systemRoles?: DemoRole[];
 }
 
 export const DEPARTMENTS = ["Bán hàng", "Kho & Vận hành", "Thu ngân", "Marketing"];

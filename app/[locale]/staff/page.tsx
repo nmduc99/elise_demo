@@ -7,6 +7,7 @@ import StatCard from "@/components/demo/StatCard";
 import { ScopeFilter, useDemoScope } from "@/components/demo/ScopeFilter";
 import { DoughnutChart, ELISE_COLORS } from "@/components/demo/DemoCharts";
 import EmployeeFormDialog from "@/components/demo/staff/EmployeeFormDialog";
+import { EmployeeRoleBadges } from "@/components/demo/staff/EmployeeRolePicker";
 import {
   DepartmentDialog,
   PositionDialog,
@@ -86,6 +87,7 @@ function emptyEmployee(storeId: string): Employee {
 export default function StaffPage() {
   const scope = useDemoScope();
   const hrAccess = useDemoAccess("hr");
+  const canAssignRoles = hrAccess.role === "director" && hrAccess.canWrite;
   const router = useRouter();
   const { toast } = useToast();
 
@@ -302,6 +304,9 @@ export default function StaffPage() {
                     <th className="px-4 py-3 font-medium">Cửa hàng</th>
                     <th className="px-4 py-3 font-medium">Phòng ban</th>
                     <th className="px-4 py-3 font-medium">Vị trí</th>
+                    {canAssignRoles && (
+                      <th className="px-4 py-3 font-medium">Vai trò hệ thống</th>
+                    )}
                     <th className="px-4 py-3 text-right font-medium">Lương</th>
                     <th className="px-4 py-3 text-center font-medium">
                       Trạng thái
@@ -327,6 +332,11 @@ export default function StaffPage() {
                         {e.department}
                       </td>
                       <td className="px-4 py-3 text-slate-600">{e.position}</td>
+                      {canAssignRoles && (
+                        <td className="px-4 py-3" onClick={(ev) => ev.stopPropagation()}>
+                          <EmployeeRoleBadges roles={e.systemRoles} />
+                        </td>
+                      )}
                       <td className="px-4 py-3 text-right font-semibold text-slate-800">
                         {formatVnd(e.salary)}
                       </td>
@@ -498,6 +508,7 @@ export default function StaffPage() {
         positions={positions.items}
         storeOptions={storeOptions}
         lockStore={!!scope.scopedStoreId}
+        canAssignRoles={canAssignRoles}
       />
 
       <DepartmentDialog

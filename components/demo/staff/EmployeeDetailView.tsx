@@ -4,6 +4,7 @@ import WriteGuard from "@/components/demo/WriteGuard";
 import { useDemoAccess } from "@/components/demo/useDemoAccess";
 import StatCard from "@/components/demo/StatCard";
 import EmployeeFormDialog from "@/components/demo/staff/EmployeeFormDialog";
+import { EmployeeRoleBadges } from "@/components/demo/staff/EmployeeRolePicker";
 import TransferDialog from "@/components/demo/staff/TransferDialog";
 import { STATUS_CLASS, STATUS_LABEL, type Department, type Position } from "@/components/demo/staff/shared";
 import {
@@ -89,6 +90,7 @@ export default function EmployeeDetailView({ employeeId }: EmployeeDetailViewPro
     const router = useRouter();
     const { toast } = useToast();
     const hrAccess = useDemoAccess("hr");
+    const canAssignRoles = hrAccess.role === "director" && hrAccess.canWrite;
 
     const employees = useCrudCollection<Employee>("elise-demo-employees", EMPLOYEES);
     const departments = useCrudCollection<Department>("elise-demo-departments", DEPT_SEED);
@@ -259,6 +261,10 @@ export default function EmployeeDetailView({ employeeId }: EmployeeDetailViewPro
                             <dd className="font-medium text-slate-800">{formatDate(employee.joinedAt)}</dd>
                         </div>
                         <div className="col-span-2">
+                            <dt className="mb-1.5 text-slate-400">Vai trò hệ thống</dt>
+                            <dd><EmployeeRoleBadges roles={employee.systemRoles} /></dd>
+                        </div>
+                        <div className="col-span-2">
                             <dt className="text-slate-400">Lương tháng</dt>
                             <dd className="text-lg font-bold text-custom">{formatVnd(employee.salary)}</dd>
                         </div>
@@ -370,6 +376,7 @@ export default function EmployeeDetailView({ employeeId }: EmployeeDetailViewPro
                     positions={positions.items}
                     storeOptions={STORES}
                     lockStore={hrAccess.isStoreScoped}
+                    canAssignRoles={canAssignRoles}
                 />
             )}
 

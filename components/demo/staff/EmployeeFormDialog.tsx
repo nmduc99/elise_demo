@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { type Employee, type EmployeeStatus, type Store } from "@/lib/demo/eliseData";
 import { inputClass, labelClass } from "@/lib/demo/formClasses";
+import type { DemoRole } from "@/lib/demo/roles";
+import EmployeeRolePicker from "./EmployeeRolePicker";
 import type { Department, Position } from "./shared";
 
 interface EmployeeFormDialogProps {
@@ -29,6 +31,7 @@ interface EmployeeFormDialogProps {
     positions: Position[];
     storeOptions: Store[];
     lockStore: boolean;
+    canAssignRoles?: boolean;
 }
 
 export default function EmployeeFormDialog({
@@ -41,12 +44,18 @@ export default function EmployeeFormDialog({
     positions,
     storeOptions,
     lockStore,
+    canAssignRoles = false,
 }: EmployeeFormDialogProps) {
     const positionsForDept = positions.filter((p) => p.department === draft.department);
+    const systemRoles = draft.systemRoles ?? [];
+
+    const setSystemRoles = (roles: DemoRole[]) => {
+        setDraft({ ...draft, systemRoles: roles.length ? roles : undefined });
+    };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-lg">
+            <DialogContent className={canAssignRoles ? "max-w-2xl" : "max-w-lg"}>
                 <DialogHeader><DialogTitle>{draft.id ? "Sửa nhân viên" : "Thêm nhân viên"}</DialogTitle></DialogHeader>
                 <div className="grid grid-cols-2 gap-3">
                     <div><label className={labelClass}>Mã NV</label><input className={inputClass} value={draft.code} placeholder="Tự sinh nếu để trống" onChange={(e) => setDraft({ ...draft, code: e.target.value })} /></div>
@@ -87,6 +96,12 @@ export default function EmployeeFormDialog({
                             </SelectContent>
                         </Select>
                     </div>
+                    {canAssignRoles && (
+                        <EmployeeRolePicker
+                            value={systemRoles}
+                            onChange={setSystemRoles}
+                        />
+                    )}
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => onOpenChange(false)}>Hủy</Button>
