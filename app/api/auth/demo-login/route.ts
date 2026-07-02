@@ -1,7 +1,37 @@
 import { AUTH_CONFIG } from "@/lib/authConfig";
-import { DEMO_USERS, isDemoRole } from "@/lib/demo/roles";
+import {
+    DEMO_ROLES,
+    DEMO_USERS,
+    isDemoRole,
+    type DemoRole,
+} from "@/lib/demo/roles";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+
+function resolveDemoRole(body: {
+    role?: unknown;
+    account?: unknown;
+    password?: unknown;
+}): DemoRole | null {
+    if (typeof body.account === "string" && typeof body.password === "string") {
+        const account = body.account.trim();
+        const password = body.password;
+
+        const matchedRole = DEMO_ROLES.find(
+            (role) =>
+                DEMO_USERS[role].account === account &&
+                DEMO_USERS[role].password === password
+        );
+
+        return matchedRole ?? null;
+    }
+
+    if (isDemoRole(body.role)) {
+        return body.role;
+    }
+
+    return null;
+}
 
 /**
  * Demo-only login. Bypasses the external API entirely: it sets the standard
@@ -10,10 +40,11 @@ import { NextResponse } from "next/server";
  */
 export async function POST(req: Request) {
     try {
-        const { role } = await req.json();
+        const body = await req.json();
+        const role = resolveDemoRole(body);
 
-        if (!isDemoRole(role)) {
-            return NextResponse.json({ error: "Invalid demo role" }, { status: 400 });
+        if (!role) {
+            return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
         const user = DEMO_USERS[role];

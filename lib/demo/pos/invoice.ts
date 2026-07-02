@@ -25,6 +25,8 @@ export interface Sale {
     subtotal: number;
     discount: number;
     total: number;
+    paymentMethod?: "cash" | "transfer";
+    paidAmount?: number;
     itemCount: number;
     lines: SaleLine[];
 }

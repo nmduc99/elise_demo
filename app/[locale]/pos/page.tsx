@@ -4,7 +4,10 @@ import AccessBanner from "@/components/demo/AccessBanner";
 import RoleGuard from "@/components/demo/RoleGuard";
 import { useDemoAccess } from "@/components/demo/useDemoAccess";
 import { useAuth } from "@/components/auth/AuthProvider";
-import CartPanel from "@/components/demo/pos/CartPanel";
+import CartPanel, {
+    type DiscountType,
+    type PaymentMethod,
+} from "@/components/demo/pos/CartPanel";
 import ProductCatalog from "@/components/demo/pos/ProductCatalog";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -18,7 +21,7 @@ import { getRoleFromUser } from "@/lib/demo/roles";
 import { formatVnd } from "@/lib/demo/format";
 import { printInvoice, type CartLine, type Sale } from "@/lib/demo/pos/invoice";
 import { useCrudCollection } from "@/lib/demo/useCrudCollection";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function PosPage() {
     const { user } = useAuth();
@@ -32,7 +35,10 @@ export default function PosPage() {
     const [category, setCategory] = useState<string>("all");
     const [customerId, setCustomerId] = useState<string>(CUSTOMERS[0].id);
     const [cart, setCart] = useState<CartLine[]>([]);
-    const [discount, setDiscount] = useState(0);
+    const [discountValue, setDiscountValue] = useState(0);
+    const [discountType, setDiscountType] = useState<DiscountType>("vnd");
+    const [paymentAmount, setPaymentAmount] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("transfer");
     const sales = useCrudCollection<Sale>("elise-demo-sales", []);
 
     const visibleProducts = useMemo(
@@ -63,12 +69,23 @@ export default function PosPage() {
     const removeLine = (index: number) => setCart((prev) => prev.filter((_, i) => i !== index));
 
     const subtotal = cart.reduce((s, l) => s + (getProduct(l.productId)?.salePrice ?? 0) * l.qty, 0);
-    const total = Math.max(0, subtotal - discount);
+    const discountAmount = useMemo(() => {
+        if (discountType === "vnd") {
+            return Math.min(discountValue, subtotal);
+        }
+        return Math.min(Math.round((subtotal * discountValue) / 100), subtotal);
+    }, [discountType, discountValue, subtotal]);
+    const total = Math.max(0, subtotal - discountAmount);
     const itemCount = cart.reduce((s, l) => s + l.qty, 0);
+
+    useEffect(() => {
+        setPaymentAmount(total);
+    }, [total]);
 
     const clearCart = () => {
         setCart([]);
-        setDiscount(0);
+        setDiscountValue(0);
+        setPaymentAmount(0);
     };
 
     const checkout = () => {
@@ -83,8 +100,10 @@ export default function PosPage() {
             storeId,
             customerName: CUSTOMERS.find((c) => c.id === customerId)?.name ?? "Khách lẻ",
             subtotal,
-            discount,
+            discount: discountAmount,
             total,
+            paymentMethod,
+            paidAmount: paymentAmount,
             itemCount,
             lines: cart.map((l) => {
                 const p = getProduct(l.productId)!;
@@ -133,8 +152,9 @@ export default function PosPage() {
                     readOnly={readOnly}
                 />
 
+                <div className="flex min-h-0 h-full flex-col overflow-hidden">
                 <CartPanel
-                    storeName={getStore(storeId)?.name ?? ""}
+                    staffName={user?.fullName ?? user?.account ?? "Nhân viên"}
                     customerId={customerId}
                     setCustomerId={setCustomerId}
                     cart={cart}
@@ -142,13 +162,21 @@ export default function PosPage() {
                     removeLine={readOnly ? () => {} : removeLine}
                     clearCart={readOnly ? () => {} : clearCart}
                     subtotal={subtotal}
-                    discount={discount}
-                    setDiscount={readOnly ? () => {} : setDiscount}
+                    discountValue={discountValue}
+                    setDiscountValue={readOnly ? () => {} : setDiscountValue}
+                    discountType={discountType}
+                    setDiscountType={readOnly ? () => {} : setDiscountType}
+                    discountAmount={discountAmount}
                     total={total}
                     itemCount={itemCount}
+                    paymentAmount={paymentAmount}
+                    setPaymentAmount={readOnly ? () => {} : setPaymentAmount}
+                    paymentMethod={paymentMethod}
+                    setPaymentMethod={readOnly ? () => {} : setPaymentMethod}
                     onCheckout={readOnly ? () => {} : checkout}
                     readOnly={readOnly}
                 />
+                </div>
                 </div>
             </div>
         </RoleGuard>
