@@ -5,6 +5,9 @@
 
 export const VND_SUFFIX = "vnđ";
 
+/** Chart axis when values are in millions of VND, e.g. "(triệu vnđ)". */
+export const VND_MILLION_AXIS_LABEL = `(triệu ${VND_SUFFIX})`;
+
 export function formatVnd(value: number): string {
     return `${formatNumber(value)} ${VND_SUFFIX}`;
 }

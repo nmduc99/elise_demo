@@ -12,7 +12,7 @@ import {
     sumPerformance,
     totalUnitsInWarehouse,
 } from "@/lib/demo/eliseData";
-import { formatNumber, formatPercent, formatVnd, formatVndShort } from "@/lib/demo/format";
+import { formatNumber, formatPercent, formatVnd, formatVndShort, VND_MILLION_AXIS_LABEL } from "@/lib/demo/format";
 import Pagination from "@/components/demo/Pagination";
 import { usePagination } from "@/lib/demo/usePagination";
 import { Crown, HandCoins, Percent, Store as StoreIcon } from "lucide-react";
@@ -64,7 +64,7 @@ export default function FranchisePage() {
                 </div>
 
                 <div className="rounded-xl border bg-white p-5 shadow-sm">
-                    <h2 className="mb-4 text-sm font-semibold text-slate-700">Phí nhượng quyền theo cửa hàng (triệu đ)</h2>
+                    <h2 className="mb-4 text-sm font-semibold text-slate-700">Phí nhượng quyền theo cửa hàng {VND_MILLION_AXIS_LABEL}</h2>
                     <BarChart
                         data={{
                             labels: rows.map((r) => r.store.name),

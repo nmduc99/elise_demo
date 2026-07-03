@@ -25,7 +25,7 @@ import {
     sumPerformance,
     totalUnitsInWarehouse,
 } from "@/lib/demo/eliseData";
-import { formatNumber, formatPercent, formatVnd, formatVndShort } from "@/lib/demo/format";
+import { formatNumber, formatPercent, formatVnd, formatVndShort, VND_MILLION_AXIS_LABEL } from "@/lib/demo/format";
 import Pagination from "@/components/demo/Pagination";
 import { usePagination } from "@/lib/demo/usePagination";
 import { Coins, Download, PiggyBank, Receipt, TrendingUp, Users } from "lucide-react";
@@ -229,7 +229,7 @@ export default function ReportCenterPage() {
                     {/* Revenue */}
                     <TabsContent value="revenue" className="space-y-4">
                         <div className="rounded-xl border bg-white p-5 shadow-sm">
-                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Doanh thu 12 tháng (triệu đ)</h2>
+                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Doanh thu 12 tháng {VND_MILLION_AXIS_LABEL}</h2>
                             <LineChart
                                 data={{
                                     labels: monthly.map((m) => m.label),
@@ -260,7 +260,7 @@ export default function ReportCenterPage() {
                     {/* Profit */}
                     <TabsContent value="profit" className="space-y-4">
                         <div className="rounded-xl border bg-white p-5 shadow-sm">
-                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Doanh thu vs Lợi nhuận (triệu đ)</h2>
+                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Doanh thu vs Lợi nhuận {VND_MILLION_AXIS_LABEL}</h2>
                             <BarChart
                                 data={{
                                     labels: monthly.map((m) => m.label),
@@ -386,7 +386,7 @@ export default function ReportCenterPage() {
                     {/* Cashflow */}
                     <TabsContent value="cashflow" className="space-y-4">
                         <div className="rounded-xl border bg-white p-5 shadow-sm">
-                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Dòng tiền 6 tháng (triệu đ)</h2>
+                            <h2 className="mb-4 text-sm font-semibold text-slate-700">Dòng tiền 6 tháng {VND_MILLION_AXIS_LABEL}</h2>
                             <BarChart
                                 data={{
                                     labels: cashflowRows.map((r) => r.label),

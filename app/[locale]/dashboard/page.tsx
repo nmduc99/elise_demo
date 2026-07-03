@@ -24,7 +24,7 @@ import {
 import { getRoleFromUser } from "@/lib/demo/roles";
 import { hasAccess } from "@/lib/demo/permissions";
 import { getDefaultHomePath } from "@/lib/demo/nav";
-import { formatNumber, formatPercent, formatVnd, formatVndShort } from "@/lib/demo/format";
+import { formatNumber, formatPercent, formatVnd, formatVndShort, VND_MILLION_AXIS_LABEL } from "@/lib/demo/format";
 import { useLocalCollection } from "@/lib/demo/useLocalCollection";
 import { useRouter } from "@/i18n/routing";
 import {
@@ -205,7 +205,7 @@ function ChainDashboard() {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div className="rounded-xl border bg-white p-5 shadow-sm">
-                    <h2 className="mb-4 text-sm font-semibold text-slate-700">Doanh thu theo tháng (triệu đ)</h2>
+                    <h2 className="mb-4 text-sm font-semibold text-slate-700">Doanh thu theo tháng {VND_MILLION_AXIS_LABEL}</h2>
                     <LineChart
                         data={{
                             labels: trend.labels,
@@ -217,7 +217,7 @@ function ChainDashboard() {
                     />
                 </div>
                 <div className="rounded-xl border bg-white p-5 shadow-sm">
-                    <h2 className="mb-4 text-sm font-semibold text-slate-700">Top sản phẩm bán chạy (triệu đ)</h2>
+                    <h2 className="mb-4 text-sm font-semibold text-slate-700">Top sản phẩm bán chạy {VND_MILLION_AXIS_LABEL}</h2>
                     <BarChart
                         data={{
                             labels: topProducts.map((t) => t.product.name),
