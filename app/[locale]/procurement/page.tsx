@@ -6,14 +6,14 @@ import { useDemoAccess } from "@/components/demo/useDemoAccess";
 import RoleGuard from "@/components/demo/RoleGuard";
 import StatCard from "@/components/demo/StatCard";
 import SupplierDialog from "@/components/demo/procurement/SupplierDialog";
-import PurchaseOrderDialog, { type PoDraft } from "@/components/demo/procurement/PurchaseOrderDialog";
+import PurchaseOrderDialog from "@/components/demo/procurement/PurchaseOrderDialog";
+import { calcPoTotals, emptyPoDraft, formatPoProductSummary } from "@/components/demo/procurement/purchaseOrderUtils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import {
     PURCHASE_ORDERS,
-    REGIONAL_WAREHOUSES,
     REGIONS,
     SUPPLIERS,
     type PurchaseOrder,
@@ -79,19 +79,18 @@ export default function ProcurementPage() {
     };
 
     const [poOpen, setPoOpen] = useState(false);
-    const [poDraft, setPoDraft] = useState<PoDraft>({
-        supplierId: SUPPLIERS[0].id,
-        warehouseId: REGIONAL_WAREHOUSES[0].id,
-        units: 200,
-        unitCost: 350_000,
-    });
+    const [poDraft, setPoDraft] = useState(emptyPoDraft);
 
     const createPo = () => {
         if (!poDraft.supplierId) {
             toast({ title: "Vui lòng chọn nhà cung cấp", variant: "destructive" });
             return;
         }
-        const totalAmount = poDraft.units * poDraft.unitCost;
+        if (poDraft.lines.length === 0) {
+            toast({ title: "Vui lòng thêm ít nhất một sản phẩm", variant: "destructive" });
+            return;
+        }
+        const { units, totalAmount } = calcPoTotals(poDraft.lines);
         orders.add({
             id: newId("po"),
             code: `PO${Date.now().toString().slice(-4)}`,
@@ -100,7 +99,8 @@ export default function ProcurementPage() {
             createdAt: new Date().toISOString(),
             status: "ordered",
             totalAmount,
-            units: poDraft.units,
+            units,
+            lines: poDraft.lines.map((line) => ({ ...line })),
         });
         toast({ title: "Đã tạo đơn nhập hàng", description: formatVnd(totalAmount), variant: "success" });
         setPoOpen(false);
@@ -237,10 +237,8 @@ export default function ProcurementPage() {
                                     className="bg-custom text-white hover:bg-custom-hover"
                                     onClick={() => {
                                         setPoDraft({
+                                            ...emptyPoDraft(),
                                             supplierId: suppliers.items[0]?.id ?? "",
-                                            warehouseId: REGIONAL_WAREHOUSES[0].id,
-                                            units: 200,
-                                            unitCost: 350_000,
                                         });
                                         setPoOpen(true);
                                     }}
@@ -257,6 +255,7 @@ export default function ProcurementPage() {
                                         <th className="px-4 py-3 font-medium">Mã đơn</th>
                                         <th className="px-4 py-3 font-medium">Nhà cung cấp</th>
                                         <th className="px-4 py-3 font-medium">Kho nhận</th>
+                                        <th className="px-4 py-3 font-medium">Sản phẩm</th>
                                         <th className="px-4 py-3 font-medium">Ngày</th>
                                         <th className="px-4 py-3 text-right font-medium">SL</th>
                                         <th className="px-4 py-3 text-right font-medium">Giá trị</th>
@@ -270,6 +269,14 @@ export default function ProcurementPage() {
                                             <td className="px-4 py-3 font-medium text-slate-800">{o.code}</td>
                                             <td className="px-4 py-3 text-slate-600">{supplierName(o.supplierId)}</td>
                                             <td className="px-4 py-3 text-slate-600">{getWarehouse(o.warehouseId)?.name}</td>
+                                            <td className="px-4 py-3 text-slate-600">
+                                                <p className="line-clamp-2 text-sm">{formatPoProductSummary(o.lines)}</p>
+                                                {o.lines?.length ? (
+                                                    <p className="mt-0.5 text-xs text-slate-400">
+                                                        {formatNumber(o.lines.length)} mặt hàng
+                                                    </p>
+                                                ) : null}
+                                            </td>
                                             <td className="px-4 py-3 text-slate-500">{formatDate(o.createdAt)}</td>
                                             <td className="px-4 py-3 text-right text-slate-700">{formatNumber(o.units)}</td>
                                             <td className="px-4 py-3 text-right font-semibold text-slate-800">{formatVndShort(o.totalAmount)}</td>

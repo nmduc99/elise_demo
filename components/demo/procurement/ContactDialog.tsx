@@ -15,14 +15,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { type Supplier, type SupplierContact } from "@/lib/demo/eliseData";
+import { type Supplier } from "@/lib/demo/eliseData";
 import { inputClass, labelClass } from "@/lib/demo/formClasses";
+
+export interface ContactDraft {
+    id?: string;
+    supplierId: string;
+    name: string;
+    title: string;
+    phone: string;
+    email: string;
+}
 
 interface ContactDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    draft: SupplierContact;
-    setDraft: (c: SupplierContact) => void;
+    draft: ContactDraft;
+    setDraft: (c: ContactDraft) => void;
     onSave: () => void;
     suppliers: Supplier[];
 }

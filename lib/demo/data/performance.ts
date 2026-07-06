@@ -33,6 +33,12 @@ export interface MonthlyPerformance {
     units: number;
 }
 
+export interface PurchaseOrderLine {
+    productId: string;
+    quantity: number;
+    unitCost: number;
+}
+
 export interface PurchaseOrder {
     id: string;
     code: string;
@@ -42,6 +48,7 @@ export interface PurchaseOrder {
     status: "draft" | "ordered" | "received";
     totalAmount: number;
     units: number;
+    lines: PurchaseOrderLine[];
 }
 
 export const LOW_STOCK_THRESHOLD = 8;
@@ -120,8 +127,19 @@ function buildPurchaseOrders(): PurchaseOrder[] {
         const count = randInt(rng, 3, 4);
         for (let i = 0; i < count; i++) {
             const supplier = SUPPLIERS[randInt(rng, 0, SUPPLIERS.length - 1)];
-            const units = randInt(rng, 200, 1200);
-            const totalAmount = units * randInt(rng, 250_000, 650_000);
+            const lineCount = randInt(rng, 1, 4);
+            const lines: PurchaseOrderLine[] = [];
+            for (let j = 0; j < lineCount; j++) {
+                const product = PRODUCTS[randInt(rng, 0, PRODUCTS.length - 1)];
+                const quantity = randInt(rng, 20, 300);
+                lines.push({
+                    productId: product.id,
+                    quantity,
+                    unitCost: product.costPrice,
+                });
+            }
+            const units = lines.reduce((sum, line) => sum + line.quantity, 0);
+            const totalAmount = lines.reduce((sum, line) => sum + line.quantity * line.unitCost, 0);
             const statusRoll = rng();
             const status: PurchaseOrder["status"] = statusRoll > 0.66 ? "received" : statusRoll > 0.33 ? "ordered" : "draft";
             const month = randInt(rng, 0, 3);
@@ -138,6 +156,7 @@ function buildPurchaseOrders(): PurchaseOrder[] {
                 status,
                 totalAmount,
                 units,
+                lines,
             });
             counter++;
         }
