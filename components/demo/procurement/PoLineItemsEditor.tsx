@@ -16,13 +16,15 @@ import { useState } from "react";
 import { emptyPoLine, type PoLineDraft } from "./purchaseOrderUtils";
 
 interface PoLineItemsEditorProps {
-  lines: PoLineDraft[];
-  onChange: (lines: PoLineDraft[]) => void;
+    lines: PoLineDraft[];
+    onChange: (lines: PoLineDraft[]) => void;
+    readOnly?: boolean;
 }
 
 export default function PoLineItemsEditor({
-  lines,
-  onChange,
+    lines,
+    onChange,
+    readOnly = false,
 }: PoLineItemsEditorProps) {
   const [picker, setPicker] = useState<PoLineDraft>(emptyPoLine());
 
@@ -69,6 +71,7 @@ export default function PoLineItemsEditor({
         Sản phẩm nhập
       </p>
 
+      {!readOnly && (
       <div className="rounded-lg border bg-slate-50/60 p-3">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-12 sm:items-end">
           <div className="sm:col-span-5">
@@ -132,6 +135,7 @@ export default function PoLineItemsEditor({
           </div>
         </div>
       </div>
+      )}
 
       {lines.length > 0 ? (
         <div className="h-64 overflow-y-auto rounded-lg border">
@@ -142,7 +146,9 @@ export default function PoLineItemsEditor({
                 <th className="px-3 py-2 text-right font-medium">SL</th>
                 <th className="px-3 py-2 text-right font-medium">Đơn giá</th>
                 <th className="px-3 py-2 text-right font-medium">Thành tiền</th>
-                <th className="px-3 py-2 text-center font-medium">Xóa</th>
+                {!readOnly && (
+                  <th className="px-3 py-2 text-center font-medium">Xóa</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -161,6 +167,9 @@ export default function PoLineItemsEditor({
                       <p className="text-xs text-slate-400">{product?.sku}</p>
                     </td>
                     <td className="px-3 py-2 text-right">
+                      {readOnly ? (
+                        <span className="text-slate-700">{formatNumber(line.quantity)}</span>
+                      ) : (
                       <input
                         type="number"
                         min={1}
@@ -172,8 +181,12 @@ export default function PoLineItemsEditor({
                           })
                         }
                       />
+                      )}
                     </td>
                     <td className="px-3 py-2 text-right">
+                      {readOnly ? (
+                        <span className="text-slate-700">{formatVnd(line.unitCost)}</span>
+                      ) : (
                       <input
                         type="number"
                         min={0}
@@ -185,10 +198,12 @@ export default function PoLineItemsEditor({
                           })
                         }
                       />
+                      )}
                     </td>
                     <td className="px-3 py-2 text-right font-medium text-slate-700">
                       {formatVnd(lineTotal)}
                     </td>
+                    {!readOnly && (
                     <td className="px-3 py-2 text-center">
                       <button
                         type="button"
@@ -198,6 +213,7 @@ export default function PoLineItemsEditor({
                         <Trash2 size={15} />
                       </button>
                     </td>
+                    )}
                   </tr>
                 );
               })}
@@ -206,7 +222,7 @@ export default function PoLineItemsEditor({
         </div>
       ) : (
         <div className="flex h-52 items-center justify-center rounded-lg border border-dashed px-4 text-center text-sm text-slate-400">
-          Chưa có sản phẩm. Chọn sản phẩm và bấm Thêm.
+          {readOnly ? "Không có sản phẩm trong đơn." : "Chưa có sản phẩm. Chọn sản phẩm và bấm Thêm."}
         </div>
       )}
 

@@ -7,7 +7,13 @@ import RoleGuard from "@/components/demo/RoleGuard";
 import StatCard from "@/components/demo/StatCard";
 import SupplierDialog from "@/components/demo/procurement/SupplierDialog";
 import PurchaseOrderDialog from "@/components/demo/procurement/PurchaseOrderDialog";
-import { calcPoTotals, emptyPoDraft, formatPoProductSummary } from "@/components/demo/procurement/purchaseOrderUtils";
+import {
+    calcPoTotals,
+    emptyPoDraft,
+    formatPoProductSummary,
+    poToDraft,
+    type PoDialogMode,
+} from "@/components/demo/procurement/purchaseOrderUtils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,6 +33,7 @@ import { usePagination } from "@/lib/demo/usePagination";
 import { useCrudCollection } from "@/lib/demo/useCrudCollection";
 import {
     ClipboardList,
+    Eye,
     PackageCheck,
     Pencil,
     Phone,
@@ -79,9 +86,35 @@ export default function ProcurementPage() {
     };
 
     const [poOpen, setPoOpen] = useState(false);
+    const [poMode, setPoMode] = useState<PoDialogMode>("create");
     const [poDraft, setPoDraft] = useState(emptyPoDraft);
+    const [poMeta, setPoMeta] = useState<Pick<PurchaseOrder, "code" | "status" | "createdAt"> | undefined>();
 
-    const createPo = () => {
+    const openPoCreate = () => {
+        setPoMode("create");
+        setPoMeta(undefined);
+        setPoDraft({
+            ...emptyPoDraft(),
+            supplierId: suppliers.items[0]?.id ?? "",
+        });
+        setPoOpen(true);
+    };
+
+    const openPoView = (order: PurchaseOrder) => {
+        setPoMode("view");
+        setPoMeta({ code: order.code, status: order.status, createdAt: order.createdAt });
+        setPoDraft(poToDraft(order));
+        setPoOpen(true);
+    };
+
+    const openPoEdit = (order: PurchaseOrder) => {
+        setPoMode("edit");
+        setPoMeta({ code: order.code, status: order.status, createdAt: order.createdAt });
+        setPoDraft(poToDraft(order));
+        setPoOpen(true);
+    };
+
+    const savePo = () => {
         if (!poDraft.supplierId) {
             toast({ title: "Vui lòng chọn nhà cung cấp", variant: "destructive" });
             return;
@@ -91,18 +124,31 @@ export default function ProcurementPage() {
             return;
         }
         const { units, totalAmount } = calcPoTotals(poDraft.lines);
-        orders.add({
-            id: newId("po"),
-            code: `PO${Date.now().toString().slice(-4)}`,
-            supplierId: poDraft.supplierId,
-            warehouseId: poDraft.warehouseId,
-            createdAt: new Date().toISOString(),
-            status: "ordered",
-            totalAmount,
-            units,
-            lines: poDraft.lines.map((line) => ({ ...line })),
-        });
-        toast({ title: "Đã tạo đơn nhập hàng", description: formatVnd(totalAmount), variant: "success" });
+        const lines = poDraft.lines.map((line) => ({ ...line }));
+
+        if (poMode === "edit" && poDraft.id) {
+            orders.update(poDraft.id, {
+                supplierId: poDraft.supplierId,
+                warehouseId: poDraft.warehouseId,
+                totalAmount,
+                units,
+                lines,
+            });
+            toast({ title: "Đã cập nhật đơn nhập hàng", description: formatVnd(totalAmount), variant: "success" });
+        } else {
+            orders.add({
+                id: newId("po"),
+                code: `PO${Date.now().toString().slice(-4)}`,
+                supplierId: poDraft.supplierId,
+                warehouseId: poDraft.warehouseId,
+                createdAt: new Date().toISOString(),
+                status: "ordered",
+                totalAmount,
+                units,
+                lines,
+            });
+            toast({ title: "Đã tạo đơn nhập hàng", description: formatVnd(totalAmount), variant: "success" });
+        }
         setPoOpen(false);
     };
 
@@ -235,13 +281,7 @@ export default function ProcurementPage() {
                             <div className="flex justify-end">
                                 <Button
                                     className="bg-custom text-white hover:bg-custom-hover"
-                                    onClick={() => {
-                                        setPoDraft({
-                                            ...emptyPoDraft(),
-                                            supplierId: suppliers.items[0]?.id ?? "",
-                                        });
-                                        setPoOpen(true);
-                                    }}
+                                    onClick={openPoCreate}
                                     disabled={suppliers.items.length === 0}
                                 >
                                     <Plus size={16} className="mr-1.5" /> Tạo đơn nhập
@@ -260,7 +300,7 @@ export default function ProcurementPage() {
                                         <th className="px-4 py-3 text-right font-medium">SL</th>
                                         <th className="px-4 py-3 text-right font-medium">Giá trị</th>
                                         <th className="px-4 py-3 text-center font-medium">Trạng thái</th>
-                                        <th className="px-4 py-3 text-center font-medium">Thao tác</th>
+                                        <th className="w-44 px-4 py-3 text-center font-medium">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y">
@@ -283,16 +323,45 @@ export default function ProcurementPage() {
                                             <td className="px-4 py-3 text-center">
                                                 <Badge className={PO_STATUS[o.status].cls}>{PO_STATUS[o.status].label}</Badge>
                                             </td>
-                                            <td className="px-4 py-3 text-center">
-                                                {o.status !== "received" ? (
-                                                    <WriteGuard permission="stock_in">
-                                                        <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => receivePo(o)}>
-                                                            <PackageCheck size={14} className="mr-1" /> Nhận hàng
-                                                        </Button>
-                                                    </WriteGuard>
-                                                ) : (
-                                                    <span className="text-xs text-slate-400">—</span>
-                                                )}
+                                            <td className="px-4 py-3">
+                                                <div className="mx-auto grid w-44 grid-cols-[28px_28px_1fr] items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => openPoView(o)}
+                                                        className="inline-flex h-7 w-7 items-center justify-center rounded text-slate-600 hover:bg-slate-100"
+                                                        title="Xem đơn"
+                                                    >
+                                                        <Eye size={16} />
+                                                    </button>
+                                                    <div className="flex h-7 w-7 items-center justify-center">
+                                                        {o.status === "ordered" ? (
+                                                            <WriteGuard permission="suppliers">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => openPoEdit(o)}
+                                                                    className="inline-flex h-7 w-7 items-center justify-center rounded text-blue-600 hover:bg-blue-50"
+                                                                    title="Chỉnh sửa"
+                                                                >
+                                                                    <Pencil size={16} />
+                                                                </button>
+                                                            </WriteGuard>
+                                                        ) : null}
+                                                    </div>
+                                                    <div className="flex h-7 items-center justify-start">
+                                                        {o.status !== "received" ? (
+                                                            <WriteGuard permission="stock_in">
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                    className="h-7 whitespace-nowrap px-2 text-xs"
+                                                                    onClick={() => receivePo(o)}
+                                                                >
+                                                                    <PackageCheck size={14} className="mr-1" /> Nhận hàng
+                                                                </Button>
+                                                            </WriteGuard>
+                                                        ) : null}
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -323,10 +392,12 @@ export default function ProcurementPage() {
             <PurchaseOrderDialog
                 open={poOpen}
                 onOpenChange={setPoOpen}
+                mode={poMode}
                 draft={poDraft}
                 setDraft={setPoDraft}
-                onSave={createPo}
+                onSave={savePo}
                 suppliers={suppliers.items}
+                orderMeta={poMeta}
             />
         </RoleGuard>
     );

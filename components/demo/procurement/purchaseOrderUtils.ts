@@ -1,5 +1,5 @@
 import { PRODUCTS, REGIONAL_WAREHOUSES, SUPPLIERS } from "@/lib/demo/eliseData";
-import type { PurchaseOrderLine } from "@/lib/demo/eliseData";
+import type { PurchaseOrder, PurchaseOrderLine } from "@/lib/demo/eliseData";
 
 export interface PoLineDraft {
     productId: string;
@@ -8,10 +8,13 @@ export interface PoLineDraft {
 }
 
 export interface PoDraft {
+    id?: string;
     supplierId: string;
     warehouseId: string;
     lines: PoLineDraft[];
 }
+
+export type PoDialogMode = "create" | "edit" | "view";
 
 export function emptyPoLine(productId = PRODUCTS[0].id): PoLineDraft {
     const product = PRODUCTS.find((p) => p.id === productId) ?? PRODUCTS[0];
@@ -34,6 +37,15 @@ export function calcPoTotals(lines: PoLineDraft[] | PurchaseOrderLine[]) {
     const units = lines.reduce((sum, line) => sum + line.quantity, 0);
     const totalAmount = lines.reduce((sum, line) => sum + line.quantity * line.unitCost, 0);
     return { units, totalAmount };
+}
+
+export function poToDraft(order: PurchaseOrder): PoDraft {
+    return {
+        id: order.id,
+        supplierId: order.supplierId,
+        warehouseId: order.warehouseId,
+        lines: (order.lines ?? []).map((line) => ({ ...line })),
+    };
 }
 
 export function formatPoProductSummary(lines: PurchaseOrderLine[] | undefined, maxNames = 2): string {
