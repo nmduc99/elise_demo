@@ -45,7 +45,7 @@ export interface PurchaseOrder {
     supplierId: string;
     warehouseId: string;
     createdAt: string;
-    status: "draft" | "ordered" | "received";
+    status: "ordered" | "received";
     totalAmount: number;
     units: number;
     lines: PurchaseOrderLine[];
@@ -141,7 +141,7 @@ function buildPurchaseOrders(): PurchaseOrder[] {
             const units = lines.reduce((sum, line) => sum + line.quantity, 0);
             const totalAmount = lines.reduce((sum, line) => sum + line.quantity * line.unitCost, 0);
             const statusRoll = rng();
-            const status: PurchaseOrder["status"] = statusRoll > 0.66 ? "received" : statusRoll > 0.33 ? "ordered" : "draft";
+            const status: PurchaseOrder["status"] = statusRoll > 0.5 ? "received" : "ordered";
             const month = randInt(rng, 0, 3);
             const day = randInt(rng, 1, 27);
             const d = new Date();

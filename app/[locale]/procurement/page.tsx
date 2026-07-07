@@ -11,6 +11,7 @@ import {
     calcPoTotals,
     emptyPoDraft,
     formatPoProductSummary,
+    normalizePurchaseOrders,
     poToDraft,
     type PoDialogMode,
 } from "@/components/demo/procurement/purchaseOrderUtils";
@@ -45,7 +46,6 @@ import {
 import { useMemo, useState } from "react";
 
 const PO_STATUS: Record<PurchaseOrder["status"], { label: string; cls: string }> = {
-    draft: { label: "Nháp", cls: "bg-slate-100 text-slate-600 hover:bg-slate-100" },
     ordered: { label: "Đã đặt", cls: "bg-blue-100 text-blue-700 hover:bg-blue-100" },
     received: { label: "Đã nhập kho", cls: "bg-green-100 text-green-700 hover:bg-green-100" },
 };
@@ -64,6 +64,7 @@ export default function ProcurementPage() {
 
     const suppliers = useCrudCollection<Supplier>("elise-demo-suppliers", SUPPLIERS);
     const orders = useCrudCollection<PurchaseOrder>("elise-demo-purchase-orders", PURCHASE_ORDERS);
+    const orderItems = useMemo(() => normalizePurchaseOrders(orders.items), [orders.items]);
 
     const supplierName = (id: string) => suppliers.items.find((s) => s.id === id)?.name ?? "—";
 
@@ -158,18 +159,18 @@ export default function ProcurementPage() {
     };
 
     const stats = useMemo(() => {
-        const received = orders.items.filter((o) => o.status === "received");
-        const pending = orders.items.filter((o) => o.status !== "received");
+        const received = orderItems.filter((o) => o.status === "received");
+        const pending = orderItems.filter((o) => o.status !== "received");
         return {
             suppliers: suppliers.items.length,
-            poValue: orders.items.reduce((s, o) => s + o.totalAmount, 0),
+            poValue: orderItems.reduce((s, o) => s + o.totalAmount, 0),
             receivedUnits: received.reduce((s, o) => s + o.units, 0),
             pending: pending.length,
         };
-    }, [orders.items, suppliers.items]);
+    }, [orderItems, suppliers.items]);
 
     const supplierPage = usePagination(suppliers.items, 10);
-    const orderPage = usePagination(orders.items, 10);
+    const orderPage = usePagination(orderItems, 10);
 
     return (
         <RoleGuard permission="suppliers">

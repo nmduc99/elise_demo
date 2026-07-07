@@ -1,6 +1,12 @@
 import { PRODUCTS, REGIONAL_WAREHOUSES, SUPPLIERS } from "@/lib/demo/eliseData";
 import type { PurchaseOrder, PurchaseOrderLine } from "@/lib/demo/eliseData";
 
+export function normalizePurchaseOrders(orders: PurchaseOrder[]): PurchaseOrder[] {
+    return orders.map((order) =>
+        (order.status as string) === "draft" ? { ...order, status: "ordered" } : order,
+    );
+}
+
 export interface PoLineDraft {
     productId: string;
     quantity: number;

@@ -30,7 +30,6 @@ import { calcPoTotals, type PoDialogMode, type PoDraft } from "./purchaseOrderUt
 export type { PoDraft, PoLineDraft, PoDialogMode } from "./purchaseOrderUtils";
 
 const PO_STATUS: Record<PurchaseOrder["status"], { label: string; cls: string }> = {
-    draft: { label: "Nháp", cls: "bg-slate-100 text-slate-600 hover:bg-slate-100" },
     ordered: { label: "Đã đặt", cls: "bg-blue-100 text-blue-700 hover:bg-blue-100" },
     received: { label: "Đã nhập kho", cls: "bg-green-100 text-green-700 hover:bg-green-100" },
 };
