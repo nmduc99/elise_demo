@@ -44,11 +44,11 @@ export default function PurchaseOrderDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+            <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col overflow-hidden">
                 <DialogHeader>
                     <DialogTitle>Tạo đơn nhập hàng</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4">
+                <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div>
                             <label className={labelClass}>Nhà cung cấp</label>
@@ -96,7 +96,7 @@ export default function PurchaseOrderDialog({
                         </div>
                     </div>
                 </div>
-                <DialogFooter>
+                <DialogFooter className="shrink-0 border-t pt-4">
                     <Button variant="outline" onClick={() => onOpenChange(false)}>Hủy</Button>
                     <Button
                         className="bg-custom text-white hover:bg-custom-hover"
